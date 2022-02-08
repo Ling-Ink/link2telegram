@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="https://raw.githubusercontent.com/Crystal-Moling/link2telegram/master/Banner.png"/><br>
+    <img width="600" src="https://raw.githubusercontent.com/Crystal-Moling/link2telegram/master/Banner.png"/><br>
 	Link2Telegram
 </h1>
 
@@ -7,7 +7,7 @@
 [English](https://raw.githubusercontent.com/Crystal-Moling/link2telegram/master/README.md) | 简体中文
 
 # 介绍
-Backup your Minecraft server to git
+通过插件调用Telegram Bot发送消息
 
 ## 使用方法
 * 复制jar包到项目根目录
