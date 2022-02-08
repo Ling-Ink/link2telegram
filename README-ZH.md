@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img width="100px" src="https://raw.githubusercontent.com/Crystal-Moling/link2telegram/master/Banner.png"/><br>
+    <img src="https://raw.githubusercontent.com/Crystal-Moling/link2telegram/master/Banner.png"/><br>
 	Link2Telegram
 </h1>
 
