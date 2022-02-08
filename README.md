@@ -4,7 +4,7 @@
 </h1>
 
 # Language
-English | [简体中文](https://raw.githubusercontent.com/Crystal-Moling/link2telegram/master/README-ZH.md)
+English | [简体中文](https://github.com/Crystal-Moling/link2telegram/blob/master/README-ZH.md)
 
 # Description
 Call Telegram Bot via plugin to send message

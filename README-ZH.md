@@ -4,7 +4,7 @@
 </h1>
 
 # 语言
-[English](https://raw.githubusercontent.com/Crystal-Moling/link2telegram/master/README.md) | 简体中文
+[English](https://github.com/Crystal-Moling/link2telegram/blob/master/README.md) | 简体中文
 
 # 介绍
 通过插件调用Telegram Bot发送消息
