@@ -1,0 +1,11 @@
+#  Link2Telegram v1.0-SNAPSHOT
+#  Created by Crystal-Moling
+#  GitHub page:https://github.com/Crystal-Moling/link2telegram
+BotToken: '123456789:qwertyuiopASDFGHJKL'
+SendMsgToChatID: 1234567890
+Proxy:
+  Hostname: 127.0.0.1
+  Port: 7890
+DefaultMsg:
+  PluginOnEnableMsg: '服务器启动'
+  PluginOnDisableMsg: '服务器关闭'
