@@ -9,7 +9,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Calendar;
 
-public final class Link2telegram extends JavaPlugin {
+public class Link2telegram extends JavaPlugin {
     TelegramBot bot;
 
     private void InitializeBot(){
@@ -39,7 +39,11 @@ public final class Link2telegram extends JavaPlugin {
     }
 
     private void SendMessage(String Msg, String MsgType){
-        bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), FormatMsg(Msg,MsgType))).toString();
+        bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), FormatMsg(Msg,MsgType)));
+    }
+
+    protected void APISendMessage(String Msg){
+        bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Msg));
     }
 
     @Override
