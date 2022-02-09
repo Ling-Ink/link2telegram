@@ -6,4 +6,5 @@ public class Link2telegramAPI {
     public void sendFormatedMsg(String Msg, String MsgType) { Link2Telegram.SendMessage(Msg,MsgType,true); }
     public String getUpdatedText(){ return Link2Telegram.GetUpdateText(); }
     public double[] getServerTPS() throws Throwable { return Link2Telegram.getRecentTpsRefl(); }
+    public int[] getServerStatus(){ return Link2Telegram.FormatSystemStatus(); }
 }

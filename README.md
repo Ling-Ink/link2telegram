@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img width="600" src="https://raw.githubusercontent.com/Crystal-Moling/link2telegram/master/Banner.png"/><br>
+    <img width="500" src="https://raw.githubusercontent.com/Crystal-Moling/link2telegram/master/Banner.png"/><br>
 	Link2Telegram
 </h1>
 
@@ -45,6 +45,13 @@ The set threshold can be modified in config.yml
    Link2telegramAPI.getServerTPS();
    ````
 Return value type: double[]
+### Get basic server information
+This method can return the current CPU and memory usage of the server
+   ````java
+   Link2telegramAPI.getServerStatus();
+   ````
+Return value type: int[CPU usage, memory usage]  
+This method can also use the built-in Bot command `/status` to get the status
 ## Depends
 
 [okhttp](https://github.com/square/okhttp)  

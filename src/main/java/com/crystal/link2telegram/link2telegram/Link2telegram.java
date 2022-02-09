@@ -10,16 +10,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.scheduler.BukkitRunnable;
+import com.sun.management.OperatingSystemMXBean;
 
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class Link2telegram extends JavaPlugin {
-    private final String STATUS_ICON = "\uD83D\uDCCA";
-    private final String WARING_ICON = "⚠️";
-    private final String INFO_ICON = "ℹ️";
+    private static final OperatingSystemMXBean osmxb = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
     private static Field recentTps;
     static Object minecraftServer;
     String UpdateText;
@@ -58,6 +59,9 @@ public class Link2telegram extends JavaPlugin {
                     Message message = update.message();
                     SetUpdateText(message.text());
                     this.getLogger().info(message.text());
+                    if(Objects.equals(message.text(), "/status")){
+                        SendMessage(GetSystemStatus(),"Info",true);
+                    }
                 }
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
@@ -71,6 +75,9 @@ public class Link2telegram extends JavaPlugin {
         else { bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Msg)); }
     }
     private String FormatMsg(String UnformattedMsg,String Type){
+        String STATUS_ICON = "\uD83D\uDCCA";
+        String WARING_ICON = "⚠️";
+        String INFO_ICON = "ℹ️";
         Calendar cal=Calendar.getInstance();
         int h = cal.get(Calendar.HOUR_OF_DAY);
         int m = cal.get(Calendar.MINUTE);
@@ -116,5 +123,24 @@ public class Link2telegram extends JavaPlugin {
                 { SendMessage(this.getConfig().getString("TPSMonitor.TPSTooLowInformation") + TPS[0],"Warn",true); }
             else{ SendMessage(this.getConfig().getString("TPSMonitor.TPSTooLowInformation"),"Warn",true); }
         }
+    }
+
+    private String GetSystemStatus(){
+        return "CPU:" + CPULoad() + "%\n" +
+                "Memory:" + MemoryLoad() + "%";
+    }
+    protected int[] FormatSystemStatus(){
+        return new int[]{CPULoad(),
+                MemoryLoad()};
+    }
+    private static int CPULoad(){
+        double cpu = osmxb.getProcessCpuLoad();
+        return (int) (cpu * 100);
+    }
+    private static int MemoryLoad(){
+        double totalvirtualMemory = osmxb.getTotalMemorySize();
+        double freePhysicalMemorySize = osmxb.getFreeMemorySize();
+        double value = freePhysicalMemorySize / totalvirtualMemory;
+        return (int) ((1 - value) * 100);
     }
 }

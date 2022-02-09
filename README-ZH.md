@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img width="600" src="https://raw.githubusercontent.com/Crystal-Moling/link2telegram/master/Banner.png"/><br>
+    <img width="500" src="https://raw.githubusercontent.com/Crystal-Moling/link2telegram/master/Banner.png"/><br>
 	Link2Telegram
 </h1>
 
@@ -44,6 +44,13 @@
   Link2telegramAPI.getServerTPS();
   ```
 返回值类型：double[]
+### 获取服务器基本信息
+该方法可以返回服务器当前的CPU和内存使用情况
+  ```java
+  Link2telegramAPI.getServerStatus();
+  ```
+返回值类型：int[CPU占用,内存占用]  
+该方法也可以用自带Bot命令`/status`获取状态
 ## 依赖
 
 [okhttp](https://github.com/square/okhttp)  
