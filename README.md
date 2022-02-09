@@ -7,9 +7,9 @@
 English | [简体中文](https://github.com/Crystal-Moling/link2telegram/blob/master/README-ZH.md)
 
 # Description
-Call Telegram Bot via plugin to send message
+Connect to Telegram Bot via plugin
 
-## Usage
+## Load
 * Copy jar package to project root directory
 * Add the following to pom.xml
 
@@ -24,9 +24,19 @@ Call Telegram Bot via plugin to send message
   ```java
   Link2telegramAPI Link2telegramAPI = new Link2telegramAPI();
   ```
-* Send message
+  
+## Documentation
+### Send message
+This method allows you to send messages using bots.
   ```java
   Link2telegramAPI.sendMsg("<Message>");
+  ```
+### GetUpdates
+This method allows to get the last message received by the bot.
+  ```java
+  for(String Text = Link2telegramAPI.getUpdatedText()){
+      //Do something
+  }
   ```
 ## Depends
 

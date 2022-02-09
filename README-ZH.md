@@ -7,9 +7,9 @@
 [English](https://github.com/Crystal-Moling/link2telegram/blob/master/README.md) | 简体中文
 
 # 介绍
-通过插件调用Telegram Bot发送消息
+通过插件连接到Telegram Bot
 
-## 使用方法
+## 加载
 * 复制jar包到项目根目录
 * 添加以下内容到pom.xml
 
@@ -24,9 +24,18 @@
   ```java
   Link2telegramAPI Link2telegramAPI = new Link2telegramAPI();
   ```
-* 发送信息
+## 文档
+### 发送消息
+这个方法允许你使用机器人发送消息
   ```java
-  Link2telegramAPI.sendMsg("<待发送信息>");
+  Link2telegramAPI.sendMsg("<待发送的消息>");
+  ```
+### 获取消息
+这个方法允许获取机器人收到的最近一条消息
+  ```java
+  for(String Text = Link2telegramAPI.getUpdatedText()){
+      //Do something
+  }
   ```
 ## 依赖
 
