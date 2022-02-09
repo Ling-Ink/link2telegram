@@ -26,20 +26,27 @@
   ```
 ## 文档
 ### 发送消息
-这个方法允许你使用机器人发送消息
+该方法允许你使用机器人发送消息
   ```java
   Link2telegramAPI.sendMsg("<待发送的消息>");
   ```
 ### 获取消息
-这个方法允许获取机器人收到的最近一条消息
+该方法允许获取机器人收到的最近一条消息
   ```java
-  for(String Text = Link2telegramAPI.getUpdatedText()){
-      //Do something
-  }
+  Link2telegramAPI.getUpdatedText()
   ```
+返回值类型：String
+### TPS监测
+该方法可以在服务器TPS超出或低于设定的阈值时发送警告消息  
+设定的阈值可以在config.yml中修改
+#### 获取TPS
+  ```java
+  Link2telegramAPI.getServerTPS();
+  ```
+返回值类型：double[]
 ## 依赖
 
-[okhttp](https://github.com/square/okhttp)
+[okhttp](https://github.com/square/okhttp)  
 [java-telegram-bot-api](https://github.com/pengrad/java-telegram-bot-api)
 
 ## License

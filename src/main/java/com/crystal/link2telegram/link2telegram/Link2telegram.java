@@ -7,7 +7,11 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import okhttp3.OkHttpClient;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Calendar;
@@ -16,6 +20,8 @@ public class Link2telegram extends JavaPlugin {
     private final String STATUS_ICON = "\uD83D\uDCCA";
     private final String WARING_ICON = "⚠️";
     private final String INFO_ICON = "ℹ️";
+    private static Field recentTps;
+    static Object minecraftServer;
     String UpdateText;
     TelegramBot bot;
 
@@ -24,6 +30,7 @@ public class Link2telegram extends JavaPlugin {
         this.saveDefaultConfig();
         InitializeBot();
         ListenUpdateText();
+        if(this.getConfig().getBoolean("TPSMonitor.Enabled")){ TPSListener(); }
         this.getLogger().info("Plugin Enabled!");
         SendMessage(this.getConfig().getString("DefaultMsg.PluginOnEnableMsg"),"Status",true);
     }
@@ -77,4 +84,37 @@ public class Link2telegram extends JavaPlugin {
         };
     }
 
+    protected double[] getRecentTpsRefl() throws Throwable {
+        if (minecraftServer == null) {
+            Server server = Bukkit.getServer();
+            Field consoleField = server.getClass().getDeclaredField("console");
+            consoleField.setAccessible(true);
+            minecraftServer = consoleField.get(server);
+        }
+        if (recentTps == null) {
+            recentTps = minecraftServer.getClass().getSuperclass().getDeclaredField("recentTps");
+            recentTps.setAccessible(true);
+        }
+        return (double[]) recentTps.get(minecraftServer);
+    }
+    private void TPSListener(){
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                try { JudgeTPS(getRecentTpsRefl()); }
+                catch (Throwable e) { e.printStackTrace(); }
+            }
+        }.runTaskTimer(this,0,20L * this.getConfig().getInt("TPSMonitor.TPSCheckTimeout"));
+    }
+    private void JudgeTPS(double[] TPS){
+        if(TPS[0] > this.getConfig().getInt("TPSMonitor.MaxTPSThreshold")){
+            if(this.getConfig().getBoolean("TPSMonitor.THIEndedWithTPS"))
+                { SendMessage(this.getConfig().getString("TPSMonitor.TPSTooHighInformation") + TPS[0],"Warn",true); }
+            else{ SendMessage(this.getConfig().getString("TPSMonitor.TPSTooHighInformation"),"Warn",true); }
+        } else if (TPS[0] < this.getConfig().getInt("TPSMonitor.MinTPSThreshold")){
+            if(this.getConfig().getBoolean("TPSMonitor.TLIEndedWithTPS"))
+                { SendMessage(this.getConfig().getString("TPSMonitor.TPSTooLowInformation") + TPS[0],"Warn",true); }
+            else{ SendMessage(this.getConfig().getString("TPSMonitor.TPSTooLowInformation"),"Warn",true); }
+        }
+    }
 }

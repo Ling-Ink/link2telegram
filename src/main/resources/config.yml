@@ -9,3 +9,17 @@ Proxy:
 DefaultMsg:
   PluginOnEnableMsg: '服务器启动'
   PluginOnDisableMsg: '服务器关闭'
+
+# Plugin functions
+TPSMonitor:
+  Enabled: true
+  # Timeout unit: seconds
+  TPSCheckTimeout: 5
+  # High TPS monitoring
+  MaxTPSThreshold: 22
+  TPSTooHighInformation: 'TPS过高,当前TPS:'
+  THIEndedWithTPS: true
+  # Low TPS monitoring
+  MinTPSThreshold: 18
+  TPSTooLowInformation: 'TPS过低,当前TPS:'
+  TLIEndedWithTPS: true

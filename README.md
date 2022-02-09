@@ -34,13 +34,20 @@ This method allows you to send messages using bots.
 ### GetUpdates
 This method allows to get the last message received by the bot.
   ```java
-  for(String Text = Link2telegramAPI.getUpdatedText()){
-      //Do something
-  }
+  Link2telegramAPI.getUpdatedText()
   ```
+Return value type: String
+### TPS monitoring
+This method can send a warning message when the server TPS exceeds or falls below a set threshold  
+The set threshold can be modified in config.yml
+#### Get TPS
+   ````java
+   Link2telegramAPI.getServerTPS();
+   ````
+Return value type: double[]
 ## Depends
 
-[okhttp](https://github.com/square/okhttp)
+[okhttp](https://github.com/square/okhttp)  
 [java-telegram-bot-api](https://github.com/pengrad/java-telegram-bot-api)
 
 ## License
