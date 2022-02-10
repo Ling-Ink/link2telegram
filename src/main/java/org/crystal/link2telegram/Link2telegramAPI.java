@@ -1,4 +1,4 @@
-package com.crystal.link2telegram.link2telegram;
+package org.crystal.link2telegram;
 
 public class Link2telegramAPI {
     Link2telegram Link2Telegram = new Link2telegram();

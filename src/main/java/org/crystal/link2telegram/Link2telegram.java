@@ -1,4 +1,4 @@
-package com.crystal.link2telegram.link2telegram;
+package org.crystal.link2telegram;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
@@ -62,7 +62,7 @@ public class Link2telegram extends JavaPlugin {
                     if(Objects.equals(message.text(), "/status")){
                         SendMessage(GetSystemStatus(),"Info",true);
                     }
-                }
+                } else { SetUpdateText(null); }
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });

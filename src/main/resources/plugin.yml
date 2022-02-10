@@ -1,4 +1,4 @@
 name: Link2telegram
 version: '${project.version}'
-main: com.crystal.link2telegram.link2telegram.Link2telegram
+main: org.crystal.link2telegram.Link2telegram
 api-version: 1.18
