@@ -2,7 +2,6 @@ package org.crystal.link2telegram;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
-import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import okhttp3.OkHttpClient;
@@ -20,11 +19,15 @@ import java.util.Calendar;
 import java.util.Objects;
 
 public class Link2telegram extends JavaPlugin {
-    private static final OperatingSystemMXBean osmxb = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+    private static Link2telegramAPI L2tAPI;
+    public static Link2telegramAPI L2tAPI(){
+        return L2tAPI;
+    }
+
+    private static Object minecraftServer;
     private static Field recentTps;
-    static Object minecraftServer;
-    String UpdateText;
-    TelegramBot bot;
+    protected String UpdateText;
+    private TelegramBot bot;
 
     @Override
     public void onEnable() {
@@ -56,39 +59,36 @@ public class Link2telegram extends JavaPlugin {
         bot.setUpdatesListener(updates -> {
             for (Update update : updates) {
                 if (update.message() != null && update.message().chat() != null) {
-                    Message message = update.message();
-                    SetUpdateText(message.text());
-                    this.getLogger().info(message.text());
-                    if(Objects.equals(message.text(), "/status")){
-                        SendMessage(GetSystemStatus(),"Info",true);
+                    GetUpdateEvent GetUpdateEvent = new GetUpdateEvent(update.message().text());
+                    Bukkit.getScheduler().runTask(this, () -> Bukkit.getServer().getPluginManager().callEvent(GetUpdateEvent));
+                    this.getLogger().info(update.message().text());
+                    if(Objects.equals(update.message().text(), "/status")){
+                        SendMessage((String) GetSystemStatus(true),"Info",true);
                     }
-                } else { SetUpdateText(null); }
+                }
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
     }
-    private void SetUpdateText(String Text){ UpdateText = Text; }
-    protected String GetUpdateText(){ return UpdateText; }
 
     protected void SendMessage(String Msg, String MsgType, boolean FormatMsg){
-        if(FormatMsg){ bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), FormatMsg(Msg,MsgType))); }
-        else { bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Msg)); }
-    }
-    private String FormatMsg(String UnformattedMsg,String Type){
-        String STATUS_ICON = "\uD83D\uDCCA";
-        String WARING_ICON = "⚠️";
-        String INFO_ICON = "ℹ️";
-        Calendar cal=Calendar.getInstance();
-        int h = cal.get(Calendar.HOUR_OF_DAY);
-        int m = cal.get(Calendar.MINUTE);
-        int s = cal.get(Calendar.SECOND);
-        String time = h + " : " + m + " : " + s + "\n";
-        return switch (Type) {
-            case "Status" -> STATUS_ICON + " [状态] " + time + UnformattedMsg;
-            case "Warn" -> WARING_ICON + " [警告] " + time + UnformattedMsg;
-            case "Info" -> INFO_ICON + " [信息] " + time + UnformattedMsg;
-            default -> time + UnformattedMsg;
-        };
+        if(FormatMsg){
+            Calendar cal=Calendar.getInstance();
+            String STATUS_ICON = "\uD83D\uDCCA";
+            String WARING_ICON = "⚠️";
+            String INFO_ICON = "ℹ️";
+            String Message;
+            String time = cal.get(Calendar.HOUR_OF_DAY) + " : " + cal.get(Calendar.MINUTE) + " : " + cal.get(Calendar.SECOND) + "\n";
+            switch (MsgType){
+                case "Status" -> Message = STATUS_ICON + " [状态] " + time + Msg;
+                case "Warn" -> Message = WARING_ICON + " [警告] " + time + Msg;
+                case "Info" -> Message = INFO_ICON + " [信息] " + time + Msg;
+                default -> Message = time + Msg;
+            }
+            bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Message));
+        } else {
+            bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Msg));
+        }
     }
 
     protected double[] getRecentTpsRefl() throws Throwable {
@@ -125,22 +125,22 @@ public class Link2telegram extends JavaPlugin {
         }
     }
 
-    private String GetSystemStatus(){
-        return "CPU:" + CPULoad() + "%\n" +
-                "Memory:" + MemoryLoad() + "%";
-    }
-    protected int[] FormatSystemStatus(){
-        return new int[]{CPULoad(),
-                MemoryLoad()};
-    }
-    private static int CPULoad(){
+    protected Object GetSystemStatus(boolean Format){
+        OperatingSystemMXBean osmxb = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+        int MemoryLoad;
+        int CPULoad;
         double cpu = osmxb.getProcessCpuLoad();
-        return (int) (cpu * 100);
-    }
-    private static int MemoryLoad(){
+        CPULoad = (int) (cpu * 100);
         double totalvirtualMemory = osmxb.getTotalMemorySize();
         double freePhysicalMemorySize = osmxb.getFreeMemorySize();
         double value = freePhysicalMemorySize / totalvirtualMemory;
-        return (int) ((1 - value) * 100);
+        MemoryLoad =  (int) ((1 - value) * 100);
+        if(Format){
+            return "CPU:" + CPULoad + "%\n" +
+                   "Memory:" + MemoryLoad + "%";
+        } else {
+            return new int[]{CPULoad,
+                    MemoryLoad};
+        }
     }
 }

@@ -1,10 +1,49 @@
 package org.crystal.link2telegram;
 
 public class Link2telegramAPI {
-    Link2telegram Link2Telegram = new Link2telegram();
-    public void sendMsg(String Msg){ Link2Telegram.SendMessage(Msg,null,false); }
-    public void sendFormatedMsg(String Msg, String MsgType) { Link2Telegram.SendMessage(Msg,MsgType,true); }
-    public String getUpdatedText(){ return Link2Telegram.GetUpdateText(); }
-    public double[] getServerTPS() throws Throwable { return Link2Telegram.getRecentTpsRefl(); }
-    public int[] getServerStatus(){ return Link2Telegram.FormatSystemStatus(); }
+    private static Link2telegram L2t;
+    public Link2telegramAPI(Link2telegram l2t){
+        L2t = l2t;
+    }
+
+    /**
+     * Send message via TelegramBot
+     * @param Msg Message to be sent
+     */
+    public void sendMsg(String Msg){
+        L2t.SendMessage(Msg,null,false);
+    }
+
+    /**
+     * Send formatted message via TelegramBot
+     * @param Msg Message to be sent
+     * @param MsgType Messagt type to be sent(Status/Warn/Info)
+     */
+    public void sendFormatedMsg(String Msg, String MsgType) {
+        L2t.SendMessage(Msg,MsgType,true);
+    }
+
+    /**
+     * Get updated text
+     * @return Updated text
+     */
+    public String getUpdatedText(){
+        return L2t.UpdateText;
+    }
+
+    /**
+     * Get setver TPS
+     * @return Server TPS
+     */
+    public double[] getServerTPS() throws Throwable {
+        return L2t.getRecentTpsRefl();
+    }
+
+    /**
+     * Get operating system CPU usage and Memory usage
+     * @return Return an int[], build with {CPU usage, Memory usage}
+     */
+    public int[] getServerStatus(){
+        return (int[]) L2t.GetSystemStatus(false);
+    }
 }
