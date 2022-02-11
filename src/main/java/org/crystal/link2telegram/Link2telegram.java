@@ -31,6 +31,7 @@ public class Link2telegram extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        L2tAPI = new Link2telegramAPI(this);
         this.saveDefaultConfig();
         InitializeBot();
         ListenUpdateText();
@@ -50,6 +51,7 @@ public class Link2telegram extends JavaPlugin {
         if(ProxyHostname != null){
             OkHttpClient client = new OkHttpClient.Builder()
                     .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ProxyHostname, ProxyPort)))
+                    .addInterceptor(new OkHttpInterceptor())
                     .build();
             bot = new TelegramBot.Builder(this.getConfig().getString("BotToken")).okHttpClient(client).build();
         } else { bot = new TelegramBot(this.getConfig().getString("BotToken")); }
