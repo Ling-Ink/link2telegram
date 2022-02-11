@@ -17,7 +17,7 @@ public class Link2telegramAPI {
     /**
      * Send formatted message via TelegramBot
      * @param Msg Message to be sent
-     * @param MsgType Messagt type to be sent(Status/Warn/Info)
+     * @param MsgType Message type to be sent(Status/Warn/Info)
      */
     public void sendFormatedMsg(String Msg, String MsgType) {
         L2t.SendMessage(Msg,MsgType,true);
@@ -32,11 +32,11 @@ public class Link2telegramAPI {
     }
 
     /**
-     * Get setver TPS
+     * Get server TPS
      * @return Server TPS
      */
     public double[] getServerTPS() throws Throwable {
-        return L2t.getRecentTpsRefl();
+        return L2t.getRecentTpsReflector();
     }
 
     /**

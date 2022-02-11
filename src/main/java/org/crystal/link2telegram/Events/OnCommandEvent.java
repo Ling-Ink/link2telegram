@@ -1,17 +1,17 @@
-package org.crystal.link2telegram;
+package org.crystal.link2telegram.Events;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class GetUpdateEvent extends Event {
+public class OnCommandEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    String Message;
-    public GetUpdateEvent(String Message){
-        this.Message = Message;
+    String Command;
+    public OnCommandEvent(String Command){
+        this.Command = Command;
     }
-    public String GetMessage(){
-        return Message;
+    public String[] GetCommand(){
+        return Command.split(" ");
     }
     @NotNull
     public HandlerList getHandlers() {

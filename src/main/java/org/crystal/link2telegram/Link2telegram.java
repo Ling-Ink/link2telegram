@@ -4,13 +4,16 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import okhttp3.OkHttpClient;
+import okhttp3.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.scheduler.BukkitRunnable;
 import com.sun.management.OperatingSystemMXBean;
+import org.crystal.link2telegram.Events.GetUpdateEvent;
+import org.crystal.link2telegram.Events.OnCommandEvent;
 
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
@@ -26,6 +29,7 @@ public class Link2telegram extends JavaPlugin {
 
     private static Object minecraftServer;
     private static Field recentTps;
+    private OkHttpClient client;
     protected String UpdateText;
     private TelegramBot bot;
 
@@ -41,6 +45,7 @@ public class Link2telegram extends JavaPlugin {
     }
     @Override
     public void onDisable() {
+        DeleteCommandList();
         this.getLogger().info("Plugin Disabled!");
         SendMessage(this.getConfig().getString("DefaultMsg.PluginOnDisableMsg"),"Status",true);
     }
@@ -49,7 +54,7 @@ public class Link2telegram extends JavaPlugin {
         String ProxyHostname = this.getConfig().getString("Proxy.Hostname");
         int ProxyPort = this.getConfig().getInt("Proxy.Port");
         if(ProxyHostname != null){
-            OkHttpClient client = new OkHttpClient.Builder()
+            client = new OkHttpClient.Builder()
                     .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ProxyHostname, ProxyPort)))
                     .addInterceptor(new OkHttpInterceptor())
                     .build();
@@ -61,12 +66,21 @@ public class Link2telegram extends JavaPlugin {
         bot.setUpdatesListener(updates -> {
             for (Update update : updates) {
                 if (update.message() != null && update.message().chat() != null) {
-                    GetUpdateEvent GetUpdateEvent = new GetUpdateEvent(update.message().text());
-                    Bukkit.getScheduler().runTask(this, () -> Bukkit.getServer().getPluginManager().callEvent(GetUpdateEvent));
-                    this.getLogger().info(update.message().text());
-                    if(Objects.equals(update.message().text(), "/status")){
+                    String[] GetUpdatedTextArray = update.message().text().split(" ");
+                    if(Objects.equals(GetUpdatedTextArray[0], "/status")){
                         SendMessage((String) GetSystemStatus(true),"Info",true);
+                    } else if(Objects.equals(GetUpdatedTextArray[0], "/sudo")){
+                        sudo(update.message().text());
+                    } else if (GetUpdatedTextArray[0].startsWith("/")){
+                        StringBuilder Command = new StringBuilder();
+                        for (int i = 1; i < update.message().text().length(); i++) {  Command.append(update.message().text().charAt(i)); }
+                        OnCommandEvent OnCommandEvent = new OnCommandEvent(Command.toString());
+                        Bukkit.getScheduler().runTask(this, () -> Bukkit.getServer().getPluginManager().callEvent(OnCommandEvent));
+                    } else {
+                        GetUpdateEvent GetUpdateEvent = new GetUpdateEvent(update.message().text());
+                        Bukkit.getScheduler().runTask(this, () -> Bukkit.getServer().getPluginManager().callEvent(GetUpdateEvent));
                     }
+                    this.getLogger().info(update.message().text());
                 }
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
@@ -93,7 +107,16 @@ public class Link2telegram extends JavaPlugin {
         }
     }
 
-    protected double[] getRecentTpsRefl() throws Throwable {
+    private void TPSListener(){
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                try { JudgeTPS(getRecentTpsReflector()); }
+                catch (Throwable e) { e.printStackTrace(); }
+            }
+        }.runTaskTimer(this,0,20L * this.getConfig().getInt("TPSMonitor.TPSCheckTimeout"));
+    }
+    protected double[] getRecentTpsReflector() throws Throwable {
         if (minecraftServer == null) {
             Server server = Bukkit.getServer();
             Field consoleField = server.getClass().getDeclaredField("console");
@@ -105,15 +128,6 @@ public class Link2telegram extends JavaPlugin {
             recentTps.setAccessible(true);
         }
         return (double[]) recentTps.get(minecraftServer);
-    }
-    private void TPSListener(){
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                try { JudgeTPS(getRecentTpsRefl()); }
-                catch (Throwable e) { e.printStackTrace(); }
-            }
-        }.runTaskTimer(this,0,20L * this.getConfig().getInt("TPSMonitor.TPSCheckTimeout"));
     }
     private void JudgeTPS(double[] TPS){
         if(TPS[0] > this.getConfig().getInt("TPSMonitor.MaxTPSThreshold")){
@@ -144,5 +158,21 @@ public class Link2telegram extends JavaPlugin {
             return new int[]{CPULoad,
                     MemoryLoad};
         }
+    }
+
+    private void sudo(String Command){
+        StringBuilder SBCommand = new StringBuilder();
+        for (int i = 1; i < Command.length(); i++) { SBCommand.append(Command.charAt(i)); }
+        String[] CommandArray = SBCommand.toString().split(" ");
+        StringBuilder OriginalCommand = new StringBuilder();
+        for (int j =1; j < CommandArray.length; j++){ OriginalCommand.append(CommandArray[j]).append(" "); }
+        Bukkit.getScheduler().runTask(this, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),OriginalCommand.toString()));
+    }
+
+    private void DeleteCommandList(){
+        Request request = new Request.Builder()
+                .url("https://api.telegram.org/bot" + this.getConfig().getString("BotToken") + "/deleteMyCommands")
+                .build();
+        try (Response response = client.newCall(request).execute()) { } catch (IOException ignored) { }
     }
 }
