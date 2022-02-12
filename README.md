@@ -35,13 +35,13 @@ Connect to Telegram Bot via plugin
   import org.crystal.link2telegram.Link2telegram;
   ````
 # Documentation
-[send message](#Send message)  
-[Get message](#Get message)  
-[TPS MONITORING](#TPS monitoring)  
-[Get server basic data](#Get server basic data)  
+[Send Message](#SendMessage)  
+[Get Message](#GetMessage)  
+[TPS Monitoring](#TPSMonitoring)  
+[Get Server Basic Data](#GetServerBasicData)  
 [config.yml](#config)  
 [Bot Command](#BotCommands)
-## Send message
+## SendMessage
 Send a message using a bot
   ````java
   Link2telegram.L2tAPI().sendMsg("<message to be sent>");
@@ -51,7 +51,7 @@ Note: This method does not format the message to be sent, if you want to format,
   Link2telegram.L2tAPI().sendFormattedMsg("<message to be sent>", "<message type>");
   ````
 Currently supported message types are Status/Warn/Info, other characters will be formatted as unprefixed information
-## Get message
+## GetMessage
 Get the last message received by the bot
 ### Instructions
 * Add `implements Listener` to the main plugin class
@@ -86,7 +86,7 @@ Get the command obtained by the robot (starting with "/")
 
 `/status and /sudo are built-in commands and cannot be monitored. For details, see `[BotCommands](#BotCommands)  
 Return value type: String[]
-## TPS monitoring
+## TPSMonitoring
 This method can send a warning message when the server TPS exceeds or falls below a set threshold  
 The set threshold can be modified in config.yml
 ### Get TPS
@@ -94,7 +94,7 @@ The set threshold can be modified in config.yml
   Link2telegram.L2tAPI().getServerTPS();
   ````
 Return value type: double[]
-## Get server basic data
+## GetServerBasicData
 This method can return the current CPU and memory usage of the server
   ````java
   Link2telegram.L2tAPI().getServerStatus();
