@@ -14,7 +14,7 @@ public class Link2telegramAPI {
      * @param Msg Message to be sent
      * @param MsgType Message type to be sent(Status/Warn/Info)
      */
-    public void sendFormatedMsg(String Msg, String MsgType) { L2t.SendMessage(Msg,MsgType,true); }
+    public void sendFormattedMsg(String Msg, String MsgType) { L2t.SendMessage(Msg,MsgType,true); }
     /**
      * Get updated text
      * @return Updated text

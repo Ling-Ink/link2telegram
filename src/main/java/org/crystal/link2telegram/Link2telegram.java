@@ -103,9 +103,9 @@ public class Link2telegram extends JavaPlugin {
             String Message;
             String time = cal.get(Calendar.HOUR_OF_DAY) + " : " + cal.get(Calendar.MINUTE) + " : " + cal.get(Calendar.SECOND) + "\n";
             switch (MsgType){
-                case "Status" -> Message = STATUS_ICON + " [状态] " + time + Msg;
-                case "Warn" -> Message = WARING_ICON + " [警告] " + time + Msg;
-                case "Info" -> Message = INFO_ICON + " [信息] " + time + Msg;
+                case "Status" -> Message = STATUS_ICON + " [Status] " + time + Msg;
+                case "Warn" -> Message = WARING_ICON + " [Warn] " + time + Msg;
+                case "Info" -> Message = INFO_ICON + " [Info] " + time + Msg;
                 default -> Message = time + Msg;
             }
             bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Message));

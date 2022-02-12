@@ -1,27 +1,37 @@
 #  Link2Telegram v1.0
 #  Created by Crystal-Moling
 #  GitHub page:https://github.com/Crystal-Moling/link2telegram
-BotToken: '123456789:qwertyuiopASDFGHJKL'
+
+# BotToken obtained from @BotFather
+BotToken: '123456:qwertyuiopASDFGHJKL'
+# Send information to this chatId
 SendMsgToChatID: 1234567890
 Proxy:
-  Hostname: 127.0.0.1
+  #Proxy server address, if not filled, no proxy will be used
+  Hostname: '127.0.0.1'
+  # proxy server port
   Port: 7890
 DefaultMsg:
-  PluginOnEnableMsg: '服务器启动'
-  PluginOnDisableMsg: '服务器关闭'
+  # The message sent when the server starts
+  PluginOnEnableMsg: 'Server started'
+  # The message sent when the server shuts down
+  PluginOnDisableMsg: 'Server down'
 
-# Plugin functions
+# Plugin function
 TPSMonitor:
+  # Whether to enable TPS monitoring
   Enabled: true
-  # Timeout unit: seconds
+  # TPS monitoring interval, in seconds
   TPSCheckTimeout: 5
-  # High TPS monitoring
+  # TPS max threshold
   MaxTPSThreshold: 22
-  TPSTooHighInformation: 'TPS过高,当前TPS:'
+  # TPS high warning message
+  TPSTooHighInformation: 'TPS is too high, current TPS:'
   # Whether to add the current TPS after the warning message
   THIEndedWithTPS: true
-  # Low TPS monitoring
+  # TPS minimum threshold
   MinTPSThreshold: 18
-  TPSTooLowInformation: 'TPS过低,当前TPS:'
+  # TPS low warning message
+  TPSTooLowInformation: 'TPS is too low, current TPS:'
   # Whether to add the current TPS after the warning message
   TLIEndedWithTPS: true
