@@ -13,7 +13,6 @@ import com.sun.management.OperatingSystemMXBean;
 import org.crystal.link2telegram.Events.GetUpdateEvent;
 import org.crystal.link2telegram.Events.OnCommandEvent;
 
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
@@ -36,32 +35,34 @@ public class Link2telegram extends JavaPlugin {
 
     private static Object minecraftServer;
     private static Field recentTps;
-    private OkHttpClient client;
     protected String UpdateText;
     private TelegramBot bot;
 
-    @Override
-    public void onEnable() {
+    @Override public void onEnable() {
         L2tAPI = new Link2telegramAPI(this);
         this.saveDefaultConfig();
         InitializeBot();
         ListenUpdateText();
         if(this.getConfig().getBoolean("TPSMonitor.Enabled")){ TPSListener(); }
-        this.getLogger().info("Plugin Enabled!");
+        onEnableMsg();
         SendMessage(this.getConfig().getString("DefaultMsg.PluginOnEnableMsg"),"Status",true);
     }
-    @Override
-    public void onDisable() {
-        if (DeleteCommandList()){this.getLogger().info("Command list Deleted!");}
+    @Override public void onDisable() {
         this.getLogger().info("Plugin Disabled!");
         SendMessage(this.getConfig().getString("DefaultMsg.PluginOnDisableMsg"),"Status",true);
+    }
+    private void onEnableMsg(){
+        this.getLogger().info("#######################");
+        this.getLogger().info("#    Link2telegram    #");
+        this.getLogger().info("#     Version 1.1     #");
+        this.getLogger().info("#######################");
     }
 
     private void InitializeBot(){
         String ProxyHostname = this.getConfig().getString("Proxy.Hostname");
         int ProxyPort = this.getConfig().getInt("Proxy.Port");
         if(ProxyHostname != null){
-            client = new OkHttpClient.Builder()
+            OkHttpClient client = new OkHttpClient.Builder()
                     .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ProxyHostname, ProxyPort)))
                     .addInterceptor(new OkHttpInterceptor())
                     .build();
@@ -69,6 +70,25 @@ public class Link2telegram extends JavaPlugin {
         } else { bot = new TelegramBot(this.getConfig().getString("BotToken")); }
     }
 
+    protected void SendMessage(String Msg, String MsgType, boolean FormatMsg){
+        if(FormatMsg){
+            Calendar cal=Calendar.getInstance();
+            String STATUS_ICON = "\uD83D\uDCCA";
+            String WARING_ICON = "⚠️";
+            String INFO_ICON = "ℹ️";
+            String Message;
+            String time = cal.get(Calendar.HOUR_OF_DAY) + " : " + cal.get(Calendar.MINUTE) + " : " + cal.get(Calendar.SECOND) + "\n";
+            switch (MsgType){
+                case "Status" -> Message = STATUS_ICON + " [Status] " + time + Msg;
+                case "Warn" -> Message = WARING_ICON + " [Warn] " + time + Msg;
+                case "Info" -> Message = INFO_ICON + " [Info] " + time + Msg;
+                default -> Message = time + Msg;
+            }
+            bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Message));
+        } else {
+            bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Msg));
+        }
+    }
     private void ListenUpdateText(){
         bot.setUpdatesListener(updates -> {
             for (Update update : updates) {
@@ -92,26 +112,6 @@ public class Link2telegram extends JavaPlugin {
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
-    }
-
-    protected void SendMessage(String Msg, String MsgType, boolean FormatMsg){
-        if(FormatMsg){
-            Calendar cal=Calendar.getInstance();
-            String STATUS_ICON = "\uD83D\uDCCA";
-            String WARING_ICON = "⚠️";
-            String INFO_ICON = "ℹ️";
-            String Message;
-            String time = cal.get(Calendar.HOUR_OF_DAY) + " : " + cal.get(Calendar.MINUTE) + " : " + cal.get(Calendar.SECOND) + "\n";
-            switch (MsgType){
-                case "Status" -> Message = STATUS_ICON + " [Status] " + time + Msg;
-                case "Warn" -> Message = WARING_ICON + " [Warn] " + time + Msg;
-                case "Info" -> Message = INFO_ICON + " [Info] " + time + Msg;
-                default -> Message = time + Msg;
-            }
-            bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Message));
-        } else {
-            bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Msg));
-        }
     }
 
     protected double[] getRecentTpsReflector() throws Throwable {
@@ -173,15 +173,5 @@ public class Link2telegram extends JavaPlugin {
         StringBuilder OriginalCommand = new StringBuilder();
         for (int j =1; j < CommandArray.length; j++){ OriginalCommand.append(CommandArray[j]).append(" "); }
         Bukkit.getScheduler().runTask(this, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),OriginalCommand.toString()));
-    }
-
-    private boolean DeleteCommandList(){
-        Request request = new Request.Builder()
-                .url("https://api.telegram.org/bot" + this.getConfig().getString("BotToken") + "/deleteMyCommands")
-                .build();
-        try (Response response = client.newCall(request).execute()) {
-            return Objects.requireNonNull(response.body()).toString().equals("{\"ok\":true,\"result\":true}");
-        } catch (IOException ignored) { }
-        return false;
     }
 }
