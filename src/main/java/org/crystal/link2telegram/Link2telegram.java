@@ -26,6 +26,13 @@ public class Link2telegram extends JavaPlugin {
     public static Link2telegramAPI L2tAPI(){
         return L2tAPI;
     }
+    private boolean GetBooleanConfig(String path){ return this.getConfig().getBoolean(path);}
+    private String GetStringConfig(String path){
+        return this.getConfig().getString(path);
+    }
+    private int GetIntConfig(String path){
+        return this.getConfig().getInt(path);
+    }
 
     private static Object minecraftServer;
     private static Field recentTps;
@@ -45,7 +52,7 @@ public class Link2telegram extends JavaPlugin {
     }
     @Override
     public void onDisable() {
-        DeleteCommandList();
+        if (DeleteCommandList()){this.getLogger().info("Command list Deleted!");}
         this.getLogger().info("Plugin Disabled!");
         SendMessage(this.getConfig().getString("DefaultMsg.PluginOnDisableMsg"),"Status",true);
     }
@@ -107,15 +114,6 @@ public class Link2telegram extends JavaPlugin {
         }
     }
 
-    private void TPSListener(){
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                try { JudgeTPS(getRecentTpsReflector()); }
-                catch (Throwable e) { e.printStackTrace(); }
-            }
-        }.runTaskTimer(this,0,20L * this.getConfig().getInt("TPSMonitor.TPSCheckTimeout"));
-    }
     protected double[] getRecentTpsReflector() throws Throwable {
         if (minecraftServer == null) {
             Server server = Bukkit.getServer();
@@ -129,27 +127,35 @@ public class Link2telegram extends JavaPlugin {
         }
         return (double[]) recentTps.get(minecraftServer);
     }
-    private void JudgeTPS(double[] TPS){
-        if(TPS[0] > this.getConfig().getInt("TPSMonitor.MaxTPSThreshold")){
-            if(this.getConfig().getBoolean("TPSMonitor.THIEndedWithTPS"))
-                { SendMessage(this.getConfig().getString("TPSMonitor.TPSTooHighInformation") + TPS[0],"Warn",true); }
-            else{ SendMessage(this.getConfig().getString("TPSMonitor.TPSTooHighInformation"),"Warn",true); }
-        } else if (TPS[0] < this.getConfig().getInt("TPSMonitor.MinTPSThreshold")){
-            if(this.getConfig().getBoolean("TPSMonitor.TLIEndedWithTPS"))
-                { SendMessage(this.getConfig().getString("TPSMonitor.TPSTooLowInformation") + TPS[0],"Warn",true); }
-            else{ SendMessage(this.getConfig().getString("TPSMonitor.TPSTooLowInformation"),"Warn",true); }
-        }
+    private void TPSListener(){
+        new BukkitRunnable(){
+            double[] TPS;
+            @Override
+            public void run(){
+                try { TPS = getRecentTpsReflector(); }
+                catch (Throwable ignored) { }
+                if(TPS[0] > GetIntConfig("TPSMonitor.MaxTPSThreshold")){
+                    if(GetBooleanConfig("TPSMonitor.THIEndedWithTPS"))
+                    { SendMessage(GetStringConfig("TPSMonitor.TPSTooHighInformation") + TPS[0],"Warn",true); }
+                    else{ SendMessage(GetStringConfig("TPSMonitor.TPSTooHighInformation"),"Warn",true); }
+                } else if (TPS[0] < GetIntConfig("TPSMonitor.MinTPSThreshold")){
+                    if(GetBooleanConfig("TPSMonitor.TLIEndedWithTPS"))
+                    { SendMessage(GetStringConfig("TPSMonitor.TPSTooLowInformation") + TPS[0],"Warn",true); }
+                    else{ SendMessage(GetStringConfig("TPSMonitor.TPSTooLowInformation"),"Warn",true); }
+                }
+            }
+        }.runTaskTimer(this,0,20L * this.getConfig().getInt("TPSMonitor.TPSCheckTimeout"));
     }
 
     protected Object GetSystemStatus(boolean Format){
-        OperatingSystemMXBean osmxb = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+        OperatingSystemMXBean OSMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
         int MemoryLoad;
         int CPULoad;
-        double cpu = osmxb.getProcessCpuLoad();
+        double cpu = OSMXBean.getProcessCpuLoad();
         CPULoad = (int) (cpu * 100);
-        double totalvirtualMemory = osmxb.getTotalMemorySize();
-        double freePhysicalMemorySize = osmxb.getFreeMemorySize();
-        double value = freePhysicalMemorySize / totalvirtualMemory;
+        double totalVirtualMemory = OSMXBean.getTotalMemorySize();
+        double freePhysicalMemorySize = OSMXBean.getFreeMemorySize();
+        double value = freePhysicalMemorySize / totalVirtualMemory;
         MemoryLoad =  (int) ((1 - value) * 100);
         if(Format){
             return "CPU:" + CPULoad + "%\n" +
@@ -169,10 +175,13 @@ public class Link2telegram extends JavaPlugin {
         Bukkit.getScheduler().runTask(this, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),OriginalCommand.toString()));
     }
 
-    private void DeleteCommandList(){
+    private boolean DeleteCommandList(){
         Request request = new Request.Builder()
                 .url("https://api.telegram.org/bot" + this.getConfig().getString("BotToken") + "/deleteMyCommands")
                 .build();
-        try (Response response = client.newCall(request).execute()) { } catch (IOException ignored) { }
+        try (Response response = client.newCall(request).execute()) {
+            return Objects.requireNonNull(response.body()).toString().equals("{\"ok\":true,\"result\":true}");
+        } catch (IOException ignored) { }
+        return false;
     }
 }

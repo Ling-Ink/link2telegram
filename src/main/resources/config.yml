@@ -1,4 +1,4 @@
-#  Link2Telegram v1.0-SNAPSHOT
+#  Link2Telegram v1.0
 #  Created by Crystal-Moling
 #  GitHub page:https://github.com/Crystal-Moling/link2telegram
 BotToken: '123456789:qwertyuiopASDFGHJKL'
@@ -18,8 +18,10 @@ TPSMonitor:
   # High TPS monitoring
   MaxTPSThreshold: 22
   TPSTooHighInformation: 'TPS过高,当前TPS:'
+  # Whether to add the current TPS after the warning message
   THIEndedWithTPS: true
   # Low TPS monitoring
   MinTPSThreshold: 18
   TPSTooLowInformation: 'TPS过低,当前TPS:'
+  # Whether to add the current TPS after the warning message
   TLIEndedWithTPS: true

@@ -35,7 +35,8 @@
 [获取消息](#获取消息)  
 [TPS监测](#TPS监测)  
 [获取服务器基本数据](#获取服务器基本数据)  
-[conftg.yml](#config)
+[config.yml](#config)  
+[Bot命令](#Bot命令)
 ## 发送消息
 使用机器人发送消息
   ```java
@@ -63,6 +64,24 @@
 * 使用`event.GetMessage()`获取接收到的信息  
 
 返回值类型：String
+## 获取命令
+获取机器人获取的命令(以"/"开头)  
+### 使用方法
+* 在插件主类添加`implements Listener`
+* 在`onEnable`中注册监听器
+  ```java
+  getServer().getPluginManager().registerEvents(this, this);
+  ```
+* 使用如下代码监听命令事件
+  ```java
+  @EventHandler(priority = EventPriority.MONITOR)
+  private void GetCommandListener(OnCommandEvent event){
+  }
+  ```
+* 使用`event.GetCommand()`获取接收到的命令文本(不带"/")  
+
+`/status和/sudo为内置命令,无法被监听.详见`[Bot命令](#Bot命令)  
+返回值类型：String[]
 ## TPS监测
 该方法可以在服务器TPS超出或低于设定的阈值时发送警告消息  
 设定的阈值可以在config.yml中修改
@@ -77,32 +96,56 @@
   Link2telegram.L2tAPI().getServerStatus();
   ```
 返回值类型：int[CPU占用,内存占用]  
-该方法也可以用自带Bot命令`/status`获取状态
+该方法也可以用自带Bot命令`/status`获取状态  
+详见[Bot命令](#Bot命令)
 ## config
 ```
-BotToken: 从@BotFather处获取的BotToken
-SendMsgToChatID: 将信息发送给该chatId
+# 从@BotFather处获取的BotToken
+BotToken: 123456:qwertyuiopASDFGHJKL
+# 将信息发送给该chatId
+SendMsgToChatID: 1234567890
 Proxy: 
-  Hostname: 代理服务器地址,不填则不使用代理
-  Port: 代理服务器端口
+  #代理服务器地址,不填则不使用代理
+  Hostname: 127.0.0.1
+  # 代理服务器端口
+  Port: 7890
 DefaultMsg:
-  PluginOnEnableMsg: 服务器启动时发送的消息
-  PluginOnDisableMsg: 服务器关闭时发送的消息
+  # 服务器启动时发送的消息
+  PluginOnEnableMsg: '服务器启动'
+  # 服务器关闭时发送的消息
+  PluginOnDisableMsg: '服务器关闭'
 
-# Plugin functions
+# 插件功能
 TPSMonitor:
-  Enabled: 是否启用TPS监测
-  # Timeout unit: seconds
-  TPSCheckTimeout: TPS监测间隔时长,单位为秒
-  # High TPS monitoring
-  MaxTPSThreshold: TPS最大阈值
-  TPSTooHighInformation: TPS过高的警告信息
-  THIEndedWithTPS: 是否在警告信息后加上当前TPS
-  # Low TPS monitoring
-  MinTPSThreshold: TPS最低阈值
-  TPSTooLowInformation: TPS过低的警告信息
-  TLIEndedWithTPS: 是否在警告信息后加上当前TPS
+  # 是否启用TPS监测
+  Enabled: true
+  # TPS监测间隔时长,单位为秒
+  TPSCheckTimeout: 5
+  # TPS最大阈值
+  MaxTPSThreshold: 22
+  # TPS过高的警告信息
+  TPSTooHighInformation: 'TPS过高,当前TPS:'
+  # 是否在警告信息后添加当前TPS
+  THIEndedWithTPS: true
+  # TPS最低阈值
+  MinTPSThreshold: 18
+  # TPS过低的警告信息
+  TPSTooLowInformation: 'TPS过低,当前TPS:'
+  # 是否在警告信息后加上当前TPS
+  TLIEndedWithTPS: true
 ```
+## Bot命令
+此处列出插件默认自带命令,这些命令无法被`OnCommandEvent`监听
+### /status
+获取当前服务器基本信息,返回消息格式：
+```
+ℹ️[信息] 12 : 34 : 56
+CPU:10%
+Memory:45%
+```
+### /sudo
+用于执行命令  
+示例：如要执行命令`/say test`,则发送命令`/sudo say test`
 # 依赖
 [okhttp](https://github.com/square/okhttp)  
 [java-telegram-bot-api](https://github.com/pengrad/java-telegram-bot-api)
