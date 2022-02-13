@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import okhttp3.OkHttpClient;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,6 +41,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
     private TelegramBot bot;
 
     @Override public void onEnable() {
+        Metrics metrics = new Metrics(this, 14304);
         L2tAPI = new Link2telegramAPI(this);
         this.saveDefaultConfig();
         InitializeBotAbout();
