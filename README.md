@@ -12,24 +12,24 @@ Connect to Telegram Bot via plugin
 # Development
 * Download the latest version of the jar package from the [Release](https://github.com/Crystal-Moling/link2telegram/releases/latest) interface
 * Copy the jar package to the project root directory
-* <h3>maven</h3>
+* ## maven
   * Add the following to pom.xml
-  ````
-    <dependency>
-      <groupId>org.crystal.link2telegram</groupId>
-      <artifactId>link2telegram</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/link2telegram-1.0.jar</systemPath>
-    </dependency>
-  ````
-* <h3>Gradle</h3>
+    ````
+      <dependency>
+        <groupId>org.crystal.link2telegram</groupId>
+        <artifactId>link2telegram</artifactId>
+        <version>1.0</version>
+        <scope>system</scope>
+        <systemPath>${project.basedir}/link2telegram-1.0.jar</systemPath>
+      </dependency>
+    ````
+* ## Gradle
   * Add the following to build.gradle
-  ````
-    dependencies {
-      compile files('link2telegram-1.0.jar')
-    }
-  ````
+    ````
+      dependencies {
+        compile files('link2telegram-1.0.jar')
+      }
+    ````
 * Add a reference to the project
   ````java
   import org.crystal.link2telegram.Link2telegram;
