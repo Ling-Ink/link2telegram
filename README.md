@@ -6,13 +6,13 @@
     English | <a href="README-ZH.md">简体中文</a>
 </p>
 
-# introduce
+# Introduce
 Connect to Telegram Bot via plugin
 
-# load
+# Development
 * Download the latest version of the jar package from the [Release](https://github.com/Crystal-Moling/link2telegram/releases/latest) interface
 * Copy the jar package to the project root directory
-* ##maven
+* <h3>maven</h3>
   * Add the following to pom.xml
   ````
     <dependency>
@@ -23,7 +23,7 @@ Connect to Telegram Bot via plugin
       <systemPath>${project.basedir}/link2telegram-1.0.jar</systemPath>
     </dependency>
   ````
-* ##Gradle
+* <h3>Gradle</h3>
   * Add the following to build.gradle
   ````
     dependencies {
@@ -102,41 +102,48 @@ This method can return the current CPU and memory usage of the server
 Return value type: int[CPU usage, memory usage]  
 This method can also use the built-in Bot command `/status` to get the status  
 See [BotCommands](#BotCommands)
-##config
+## config
+### Plugin Variable
+`%TPS%`Server TPS  
+`%player%`Logged in player
+### Plugin Configuration
 ````
 # BotToken obtained from @BotFather
-BotToken: 123456:qwertyuiopASDFGHJKL
+BotToken: '123456:qwertyuiopASDFGHJKL'
 # Send information to this chatId
 SendMsgToChatID: 1234567890
 Proxy:
   #Proxy server address, if not filled, no proxy will be used
-  Hostname: 127.0.0.1
+  Hostname: '127.0.0.1'
   # proxy server port
   Port: 7890
-DefaultMsg:
+
+# Plugin function
+ServerStart/StopMessage:
+  # Whether to enable Server Start/Stop Message
+  Enabled: true
   # The message sent when the server starts
   PluginOnEnableMsg: 'Server started'
   # The message sent when the server shuts down
   PluginOnDisableMsg: 'Server down'
-
-# Plugin function
 TPSMonitor:
-  # Whether to enable TPS monitoring
+  # Whether to enable TPS monitor
   Enabled: true
   # TPS monitoring interval, in seconds
   TPSCheckTimeout: 5
   # TPS max threshold
   MaxTPSThreshold: 22
   # TPS high warning message
-  TPSTooHighInformation: 'TPS is too high, current TPS:'
-  # Whether to add the current TPS after the warning message
-  THIEndedWithTPS: true
+  TPSTooHighInformation: 'TPS is too high, current TPS:%TPS%'
   # TPS minimum threshold
   MinTPSThreshold: 18
   # TPS low warning message
-  TPSTooLowInformation: 'TPS is too low, current TPS:'
-  # Whether to add the current TPS after the warning message
-  TLIEndedWithTPS: true
+  TPSTooLowInformation: 'TPS is too low, current TPS:%TPS%'
+PlayerLogin:
+  # Whether to enable Player login Listener
+  Enabled: true
+  # Player Login Message
+  PlayerLoginMessage: 'Player %player% login!'
 ````
 ## BotCommands
 The default built-in commands of the plugin are listed here, and these commands cannot be monitored by `OnCommandEvent`

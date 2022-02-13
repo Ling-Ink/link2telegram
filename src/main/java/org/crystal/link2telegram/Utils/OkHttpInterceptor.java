@@ -1,4 +1,4 @@
-package org.crystal.link2telegram;
+package org.crystal.link2telegram.Utils;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;

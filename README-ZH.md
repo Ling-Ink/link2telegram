@@ -9,7 +9,7 @@
 # 介绍
 通过插件连接到Telegram Bot
 
-# 加载
+# 开发
 * 从[Release](https://github.com/Crystal-Moling/link2telegram/releases/latest )界面下载最新版本jar包
 * 复制jar包到项目根目录
 * ## maven
@@ -39,7 +39,7 @@
 [获取消息](#获取消息)  
 [TPS监测](#TPS监测)  
 [获取服务器基本数据](#获取服务器基本数据)  
-[config.yml](#config)  
+[config.yml](#配置)  
 [Bot命令](#Bot命令)
 ## 发送消息
 使用机器人发送消息
@@ -102,7 +102,11 @@
 返回值类型：int[CPU占用,内存占用]  
 该方法也可以用自带Bot命令`/status`获取状态  
 详见[Bot命令](#Bot命令)
-## config
+## 配置
+### 插件变量
+`%TPS%`Server TPS  
+`%player%`Logged in player
+### 插件配置
 ```
 # 从@BotFather处获取的BotToken
 BotToken: 123456:qwertyuiopASDFGHJKL
@@ -113,13 +117,15 @@ Proxy:
   Hostname: 127.0.0.1
   # 代理服务器端口
   Port: 7890
-DefaultMsg:
+
+# 插件功能
+ServerStart/StopMessage:
+  # 是否启用服务器启动/关闭信息
+  Enabled: true
   # 服务器启动时发送的消息
   PluginOnEnableMsg: '服务器启动'
   # 服务器关闭时发送的消息
   PluginOnDisableMsg: '服务器关闭'
-
-# 插件功能
 TPSMonitor:
   # 是否启用TPS监测
   Enabled: true
@@ -128,15 +134,16 @@ TPSMonitor:
   # TPS最大阈值
   MaxTPSThreshold: 22
   # TPS过高的警告信息
-  TPSTooHighInformation: 'TPS过高,当前TPS:'
-  # 是否在警告信息后添加当前TPS
-  THIEndedWithTPS: true
+  TPSTooHighInformation: 'TPS过高,当前TPS:%TPS%'
   # TPS最低阈值
   MinTPSThreshold: 18
   # TPS过低的警告信息
-  TPSTooLowInformation: 'TPS过低,当前TPS:'
-  # 是否在警告信息后加上当前TPS
-  TLIEndedWithTPS: true
+  TPSTooLowInformation: 'TPS过低,当前TPS:%TPS%'
+PlayerLogin:
+  # 是否启用玩家登录监听器
+  Enabled: true
+  # 玩家登录信息
+  PlayerLoginMessage: '玩家 %player% 登录!'
 ```
 ## Bot命令
 此处列出插件默认自带命令,这些命令无法被`OnCommandEvent`监听

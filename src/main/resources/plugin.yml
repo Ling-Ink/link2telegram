@@ -2,3 +2,6 @@ name: Link2telegram
 version: '${project.version}'
 main: org.crystal.link2telegram.Link2telegram
 api-version: 1.18
+commands:
+  l2trestart:
+    description: Restart Bot.

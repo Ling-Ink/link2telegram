@@ -18,20 +18,24 @@ DefaultMsg:
   PluginOnDisableMsg: 'Server down'
 
 # Plugin function
+ServerStart/StopMessage:
+  # Whether to enable Server Start Message
+  Enabled: true
 TPSMonitor:
-  # Whether to enable TPS monitoring
+  # Whether to enable TPS monitor
   Enabled: true
   # TPS monitoring interval, in seconds
   TPSCheckTimeout: 5
   # TPS max threshold
   MaxTPSThreshold: 22
   # TPS high warning message
-  TPSTooHighInformation: 'TPS is too high, current TPS:'
-  # Whether to add the current TPS after the warning message
-  THIEndedWithTPS: true
+  TPSTooHighInformation: 'TPS is too high, current TPS:%TPS%'
   # TPS minimum threshold
   MinTPSThreshold: 18
   # TPS low warning message
-  TPSTooLowInformation: 'TPS is too low, current TPS:'
-  # Whether to add the current TPS after the warning message
-  TLIEndedWithTPS: true
+  TPSTooLowInformation: 'TPS is too low, current TPS:%TPS%'
+PlayerLogin:
+  # Whether to enable Player login Listener
+  Enabled: true
+  # Player Login Message
+  PlayerLoginMessage: 'Player %player% login!'
