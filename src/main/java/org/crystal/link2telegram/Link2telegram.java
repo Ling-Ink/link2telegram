@@ -58,8 +58,8 @@ public class Link2telegram extends JavaPlugin implements Listener {
         }
     }
     private void onEnableMsg(){
-        this.getLogger().info("    Link2telegram    ");
-        this.getLogger().info("     Version 1.1     ");
+        this.getLogger().info("#     Link2telegram     #");
+        this.getLogger().info("#   Version 1.1.1-pre   #");
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, @NotNull String[] args) {
