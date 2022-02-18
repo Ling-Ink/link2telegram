@@ -17,10 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.crystal.link2telegram.Events.GetUpdateEvent;
 import org.crystal.link2telegram.Events.OnCommandEvent;
-import org.crystal.link2telegram.Utils.SendBukkitCommand;
-import org.crystal.link2telegram.Utils.GetSystemStatus;
-import org.crystal.link2telegram.Utils.Formatter;
-import org.crystal.link2telegram.Utils.GetTPS;
+import org.crystal.link2telegram.Utils.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
@@ -35,7 +32,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
     private int GetIntConfig(String path){ return this.getConfig().getInt(path); }
     private void onEnableMsg(){
         this.getLogger().info("#     Link2telegram     #");
-        this.getLogger().info("#   Version 1.1.1-pre   #");
+        this.getLogger().info("#   Version 1.1.2-pre   #");
     }
 
     private TelegramBot bot;
@@ -85,15 +82,12 @@ public class Link2telegram extends JavaPlugin implements Listener {
     protected void SendMessage(String Msg, String MsgType, boolean FormatMsg){
         if(FormatMsg){
             Calendar cal=Calendar.getInstance();
-            String STATUS_ICON = "\uD83D\uDCCA";
-            String WARING_ICON = "⚠️";
-            String INFO_ICON = "ℹ️";
             String Message;
             String time = cal.get(Calendar.HOUR_OF_DAY) + " : " + cal.get(Calendar.MINUTE) + " : " + cal.get(Calendar.SECOND) + "\n";
             switch (MsgType){
-                case "Status" -> Message = STATUS_ICON + " [Status] " + time + Msg;
-                case "Warn" -> Message = WARING_ICON + " [Warn] " + time + Msg;
-                case "Info" -> Message = INFO_ICON + " [Info] " + time + Msg;
+                case "Status" -> Message = Characters.STATUS_ICON + " [Status] " + time + Msg;
+                case "Warn" -> Message = Characters.WARING_ICON + " [Warn] " + time + Msg;
+                case "Info" -> Message = Characters.INFO_ICON + " [Info] " + time + Msg;
                 default -> Message = time + Msg;
             }
             bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Message));

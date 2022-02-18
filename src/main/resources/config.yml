@@ -1,4 +1,4 @@
-#  Link2Telegram v1.1.1-pre
+#  Link2Telegram v1.1.2-pre
 #  Created by Crystal-Moling
 #  GitHub page:https://github.com/Crystal-Moling/link2telegram
 
@@ -11,16 +11,15 @@ Proxy:
   Hostname: '127.0.0.1'
   # proxy server port
   Port: 7890
-DefaultMsg:
-  # The message sent when the server starts
-  PluginOnEnableMsg: 'Server started'
-  # The message sent when the server shuts down
-  PluginOnDisableMsg: 'Server down'
 
 # Plugin function
 ServerStart/StopMessage:
   # Whether to enable Server Start Message
   Enabled: true
+  # The message sent when the server starts
+  PluginOnEnableMsg: 'Server started'
+  # The message sent when the server shuts down
+  PluginOnDisableMsg: 'Server down'
 TPSMonitor:
   # Whether to enable TPS monitor
   Enabled: true
