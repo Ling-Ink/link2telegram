@@ -14,16 +14,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.scheduler.BukkitRunnable;
-import com.sun.management.OperatingSystemMXBean;
 import org.crystal.link2telegram.Events.GetUpdateEvent;
 import org.crystal.link2telegram.Events.OnCommandEvent;
-import org.crystal.link2telegram.Utils.OkHttpInterceptor;
+import org.crystal.link2telegram.Utils.GetSystemStatus;
+import org.crystal.link2telegram.Utils.Formatter;
+import org.crystal.link2telegram.Utils.GetTPS;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Calendar;
@@ -35,9 +33,6 @@ public class Link2telegram extends JavaPlugin implements Listener {
     private String GetStringConfig(String path){ return this.getConfig().getString(path); }
     private int GetIntConfig(String path){ return this.getConfig().getInt(path); }
 
-    private static Object minecraftServer;
-    private static Field recentTps;
-    protected String UpdateText;
     private TelegramBot bot;
 
     @Override public void onEnable() {
@@ -63,12 +58,9 @@ public class Link2telegram extends JavaPlugin implements Listener {
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (cmd.getName().equalsIgnoreCase("basic")) { //如果玩家输入了/basic则执行如下内容...
-            if ((sender instanceof Player)) { //如果sender与Player类不匹配
-                InitializeBotAbout();
-            } else {
-                sender.sendMessage("这个指令只能让玩家使用。");
-            }
+        if (cmd.getName().equalsIgnoreCase("l2trestart")) {
+            if (!(sender instanceof Player)) { InitializeBotAbout(); }
+            else { sender.sendMessage("This command can only be used in console."); }
             return true;
         }
         return false;
@@ -85,7 +77,6 @@ public class Link2telegram extends JavaPlugin implements Listener {
         if(ProxyHostname != null){
             OkHttpClient client = new OkHttpClient.Builder()
                     .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ProxyHostname, ProxyPort)))
-                    .addInterceptor(new OkHttpInterceptor())
                     .build();
             bot = new TelegramBot.Builder(this.getConfig().getString("BotToken")).okHttpClient(client).build();
         } else { bot = new TelegramBot(this.getConfig().getString("BotToken")); }
@@ -116,7 +107,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
                 if (update.message() != null && update.message().chat() != null) {
                     String[] GetUpdatedTextArray = update.message().text().split(" ");
                     if(Objects.equals(GetUpdatedTextArray[0], "/status")){
-                        SendMessage((String) GetSystemStatus(true),"Info",true);
+                        SendMessage((String) GetSystemStatus.Get(true),"Info",true);
                     } else if(Objects.equals(GetUpdatedTextArray[0], "/sudo")){
                         sudo(update.message().text());
                     } else if (GetUpdatedTextArray[0].startsWith("/")){
@@ -137,7 +128,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
 
     @EventHandler private void playerLogin(PlayerLoginEvent event){
         SendMessage(
-                FormatByPluginVariable(
+                Formatter.PluginVariable(
                         GetStringConfig("PlayerLogin.PlayerLoginMessage"),
                         "player",
                         event.getPlayer().getName()
@@ -147,29 +138,16 @@ public class Link2telegram extends JavaPlugin implements Listener {
         );
     }
 
-    protected double[] getRecentTpsReflector() throws Throwable {
-        if (minecraftServer == null) {
-            Server server = Bukkit.getServer();
-            Field consoleField = server.getClass().getDeclaredField("console");
-            consoleField.setAccessible(true);
-            minecraftServer = consoleField.get(server);
-        }
-        if (recentTps == null) {
-            recentTps = minecraftServer.getClass().getSuperclass().getDeclaredField("recentTps");
-            recentTps.setAccessible(true);
-        }
-        return (double[]) recentTps.get(minecraftServer);
-    }
     private void TPSListener(){
         new BukkitRunnable(){
             double[] TPS;
             @Override
             public void run(){
-                try { TPS = getRecentTpsReflector(); }
+                try { TPS = GetTPS.Get(); }
                 catch (Throwable ignored) { }
                 if(TPS[0] > GetIntConfig("TPSMonitor.MaxTPSThreshold")){
                     SendMessage(
-                            FormatByPluginVariable(
+                            Formatter.PluginVariable(
                                     GetStringConfig("TPSMonitor.TPSTooHighInformation"),
                                     "TPS",
                                     TPS[0]
@@ -179,7 +157,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
                     );
                 } else if (TPS[0] < GetIntConfig("TPSMonitor.MinTPSThreshold")){
                     SendMessage(
-                            FormatByPluginVariable(
+                            Formatter.PluginVariable(
                                     GetStringConfig("TPSMonitor.TPSTooLowInformation"),
                                     "TPS",
                                     TPS[0]
@@ -195,25 +173,6 @@ public class Link2telegram extends JavaPlugin implements Listener {
         );
     }
 
-    protected Object GetSystemStatus(boolean Format){
-        OperatingSystemMXBean OSMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-        int MemoryLoad;
-        int CPULoad;
-        double cpu = OSMXBean.getProcessCpuLoad();
-        CPULoad = (int) (cpu * 100);
-        double totalVirtualMemory = OSMXBean.getTotalMemorySize();
-        double freePhysicalMemorySize = OSMXBean.getFreeMemorySize();
-        double value = freePhysicalMemorySize / totalVirtualMemory;
-        MemoryLoad =  (int) ((1 - value) * 100);
-        if(Format){
-            return "CPU:" + CPULoad + "%\n" +
-                   "Memory:" + MemoryLoad + "%";
-        } else {
-            return new int[]{CPULoad,
-                    MemoryLoad};
-        }
-    }
-
     private void sudo(String Command){
         StringBuilder SBCommand = new StringBuilder();
         for (int i = 1; i < Command.length(); i++) { SBCommand.append(Command.charAt(i)); }
@@ -221,15 +180,5 @@ public class Link2telegram extends JavaPlugin implements Listener {
         StringBuilder OriginalCommand = new StringBuilder();
         for (int j =1; j < CommandArray.length; j++){ OriginalCommand.append(CommandArray[j]).append(" "); }
         Bukkit.getScheduler().runTask(this, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),OriginalCommand.toString()));
-    }
-
-    private String FormatByPluginVariable(String configText, String VariableName, Object Variable){
-        String[] GetText = configText.split("%");
-        StringBuilder OutputString = new StringBuilder();
-        for (String s : GetText) {
-            if (!s.equals(VariableName)) { OutputString.append(s); }
-            else { OutputString.append(Variable); }
-        }
-        return OutputString.toString();
     }
 }

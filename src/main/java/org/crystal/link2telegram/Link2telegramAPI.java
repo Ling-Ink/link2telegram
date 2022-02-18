@@ -1,5 +1,8 @@
 package org.crystal.link2telegram;
 
+import org.crystal.link2telegram.Utils.GetSystemStatus;
+import org.crystal.link2telegram.Utils.GetTPS;
+
 public class Link2telegramAPI {
     private static Link2telegram L2t;
     public Link2telegramAPI(Link2telegram l2t){ L2t = l2t; }
@@ -16,18 +19,13 @@ public class Link2telegramAPI {
      */
     public void sendFormattedMsg(String Msg, String MsgType) { L2t.SendMessage(Msg,MsgType,true); }
     /**
-     * Get updated text
-     * @return Updated text
-     */
-    public String getUpdatedText(){ return L2t.UpdateText; }
-    /**
      * Get server TPS
      * @return Server TPS
      */
-    public double[] getServerTPS() throws Throwable { return L2t.getRecentTpsReflector(); }
+    public double[] getServerTPS() throws Throwable { return GetTPS.Get(); }
     /**
      * Get operating system CPU usage and Memory usage
      * @return Return an int[], build with {CPU usage, Memory usage}
      */
-    public int[] getServerStatus(){ return (int[]) L2t.GetSystemStatus(false); }
+    public int[] getServerStatus(){ return (int[]) GetSystemStatus.Get(false); }
 }
