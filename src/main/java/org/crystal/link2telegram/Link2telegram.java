@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.crystal.link2telegram.Events.GetUpdateEvent;
 import org.crystal.link2telegram.Events.OnCommandEvent;
+import org.crystal.link2telegram.Utils.SendBukkitCommand;
 import org.crystal.link2telegram.Utils.GetSystemStatus;
 import org.crystal.link2telegram.Utils.Formatter;
 import org.crystal.link2telegram.Utils.GetTPS;
@@ -32,6 +33,10 @@ public class Link2telegram extends JavaPlugin implements Listener {
     public static Link2telegramAPI L2tAPI(){ return L2tAPI; }
     private String GetStringConfig(String path){ return this.getConfig().getString(path); }
     private int GetIntConfig(String path){ return this.getConfig().getInt(path); }
+    private void onEnableMsg(){
+        this.getLogger().info("#     Link2telegram     #");
+        this.getLogger().info("#   Version 1.1.1-pre   #");
+    }
 
     private TelegramBot bot;
 
@@ -52,12 +57,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
             SendMessage(GetStringConfig("ServerStart/StopMessage.PluginOnDisableMsg"),"Status",true);
         }
     }
-    private void onEnableMsg(){
-        this.getLogger().info("#     Link2telegram     #");
-        this.getLogger().info("#   Version 1.1.1-pre   #");
-    }
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, @NotNull String[] args) {
+    @Override public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, @NotNull String[] args) {
         if (cmd.getName().equalsIgnoreCase("l2trestart")) {
             if (!(sender instanceof Player)) { InitializeBotAbout(); }
             else { sender.sendMessage("This command can only be used in console."); }
@@ -109,11 +109,9 @@ public class Link2telegram extends JavaPlugin implements Listener {
                     if(Objects.equals(GetUpdatedTextArray[0], "/status")){
                         SendMessage((String) GetSystemStatus.Get(true),"Info",true);
                     } else if(Objects.equals(GetUpdatedTextArray[0], "/sudo")){
-                        sudo(update.message().text());
+                        SendBukkitCommand.Send(update.message().text());
                     } else if (GetUpdatedTextArray[0].startsWith("/")){
-                        StringBuilder Command = new StringBuilder();
-                        for (int i = 1; i < update.message().text().length(); i++) {  Command.append(update.message().text().charAt(i)); }
-                        OnCommandEvent OnCommandEvent = new OnCommandEvent(Command.toString());
+                        OnCommandEvent OnCommandEvent = new OnCommandEvent(Formatter.BotCommand(update.message().text().length(), update.message().text()));
                         Bukkit.getScheduler().runTask(this, () -> Bukkit.getServer().getPluginManager().callEvent(OnCommandEvent));
                     } else {
                         GetUpdateEvent GetUpdateEvent = new GetUpdateEvent(update.message().text());
@@ -171,14 +169,5 @@ public class Link2telegram extends JavaPlugin implements Listener {
                 0,
                 20L * this.getConfig().getInt("TPSMonitor.TPSCheckTimeout")
         );
-    }
-
-    private void sudo(String Command){
-        StringBuilder SBCommand = new StringBuilder();
-        for (int i = 1; i < Command.length(); i++) { SBCommand.append(Command.charAt(i)); }
-        String[] CommandArray = SBCommand.toString().split(" ");
-        StringBuilder OriginalCommand = new StringBuilder();
-        for (int j =1; j < CommandArray.length; j++){ OriginalCommand.append(CommandArray[j]).append(" "); }
-        Bukkit.getScheduler().runTask(this, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),OriginalCommand.toString()));
     }
 }

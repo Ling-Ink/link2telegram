@@ -10,4 +10,9 @@ public class Formatter {
         }
         return OutputString.toString();
     }
+    public static String[] BotCommand(int Length, String Text){
+        StringBuilder Command = new StringBuilder();
+        for (int i = 1; i < Length; i++) { Command.append(Text.charAt(i)); }
+        return Command.toString().split(" ");
+    }
 }
