@@ -151,8 +151,8 @@ The default built-in commands of the plugin are listed here, and these commands 
 Get the basic information of the current server and return the message format:
 ````
 ℹ️[Info] 12:34:56
-CPU: 10%
-Memory: 45%
+CPU: [█░░░░░░░░░]10%
+Memory: [████▌░░░░░]45%
 ````
 ### /sudo
 for executing commands  
