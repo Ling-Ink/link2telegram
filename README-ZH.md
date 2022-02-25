@@ -44,11 +44,7 @@
 ## 发送消息
 使用机器人发送消息
   ```java
-  Link2telegram.L2tAPI().sendMsg("<待发送的消息>");
-  ```
-注意:该方法不会对将要发送的消息格式化处理，如果要进行格式化，请使用以下代码:
-  ```java
-  Link2telegram.L2tAPI().sendFormattedMsg("<待发送的消息>", "<消息种类>");
+  Link2telegram.L2tAPI().sendFormattedMsg("<待发送的消息>", ["<消息种类>"]);
   ```
 目前支持的消息种类有Status/Warn/Info,输入其他字符将被格式化为无前缀信息
 ## 获取消息

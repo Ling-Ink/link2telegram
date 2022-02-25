@@ -133,8 +133,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
     private void TPSListener(){
         new BukkitRunnable(){
             double[] TPS;
-            @Override
-            public void run(){
+            @Override public void run(){
                 try { TPS = GetTPS.Get(); }
                 catch (Throwable ignored) { }
                 if(TPS[0] > GetIntConfig("TPSMonitor.MaxTPSThreshold")){

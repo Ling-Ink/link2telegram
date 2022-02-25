@@ -44,11 +44,7 @@ Connect to Telegram Bot via plugin
 ## SendMessage
 Send a message using a bot
   ````java
-  Link2telegram.L2tAPI().sendMsg("<message to be sent>");
-  ````
-Note: This method does not format the message to be sent, if you want to format, use the following code:
-  ````java
-  Link2telegram.L2tAPI().sendFormattedMsg("<message to be sent>", "<message type>");
+  Link2telegram.L2tAPI().sendFormattedMsg("<message to be sent>", ["<message type>"]);
   ````
 Currently supported message types are Status/Warn/Info, other characters will be formatted as unprefixed information
 ## GetMessage

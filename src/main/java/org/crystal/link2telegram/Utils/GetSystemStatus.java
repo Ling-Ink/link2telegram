@@ -15,10 +15,12 @@ public class GetSystemStatus {
         double freePhysicalMemorySize = OSMXBean.getFreeMemorySize();
         double value = freePhysicalMemorySize / totalVirtualMemory;
         MemoryLoad =  (int) ((1 - value) * 100);
+        String OS = System.getProperty("os.name");
         if(Format){
-            return "CPU:" + Formatter.ProgressBar(CPULoad,100) + CPULoad + "%\n" +
+            return "OS:" + OS + "\n" +
+                    "CPU:" + Formatter.ProgressBar(CPULoad,100) + CPULoad + "%\n" +
                     "Memory:" + Formatter.ProgressBar(MemoryLoad,100) + MemoryLoad + "%";
         }
-        else { return new int[]{CPULoad, MemoryLoad}; }
+        else { return new Object[]{OS, CPULoad, MemoryLoad}; }
     }
 }
