@@ -95,7 +95,7 @@ This method can return the current CPU and memory usage of the server
   ````java
   Link2telegram.L2tAPI().getServerStatus();
   ````
-Return value type: int[CPU usage, memory usage]  
+Return value type: Object[OS Type, CPU Usage, Memory Usage, Used Disk Space, Total Disk Space]  
 This method can also use the built-in Bot command `/status` to get the status  
 See [BotCommands](#BotCommands)
 ## config
@@ -149,6 +149,9 @@ Get the basic information of the current server and return the message format:
 ℹ️[Info] 12:34:56
 CPU: [█░░░░░░░░░]10%
 Memory: [████▌░░░░░]45%
+Disk:
+   Root Path:/
+   Used Disk:14G / 49G
 ````
 ### /sudo
 for executing commands  

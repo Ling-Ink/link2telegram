@@ -95,7 +95,7 @@
   ```java
   Link2telegram.L2tAPI().getServerStatus();
   ```
-返回值类型：int[CPU占用,内存占用]  
+返回值类型：Object[系统类型, CPU占用, 内存占用, 可用磁盘空间, 总磁盘空间]  
 该方法也可以用自带Bot命令`/status`获取状态  
 详见[Bot命令](#Bot命令)
 ## 配置
@@ -149,6 +149,9 @@ PlayerLogin:
 ℹ️[信息] 12 : 34 : 56
 CPU: [█░░░░░░░░░]10%
 Memory: [████▌░░░░░]45%
+Disk:
+   Root Path:/
+   Used Disk:14G / 49G
 ```
 ### /sudo
 用于执行命令  
