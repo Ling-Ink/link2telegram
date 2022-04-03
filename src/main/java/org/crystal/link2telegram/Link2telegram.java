@@ -32,7 +32,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
     private int GetIntConfig(String path){ return this.getConfig().getInt(path); }
     private void onEnableMsg(){
         this.getLogger().info("#     Link2telegram     #");
-        this.getLogger().info("#   Version 1.1.2-pre   #");
+        this.getLogger().info("#   Version 1.1.3-pre   #");
     }
 
     private TelegramBot bot;
