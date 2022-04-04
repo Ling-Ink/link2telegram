@@ -18,16 +18,16 @@ Connect to Telegram Bot via plugin
       <dependency>
         <groupId>org.crystal.link2telegram</groupId>
         <artifactId>link2telegram</artifactId>
-        <version>1.0</version>
+        <version>1.2</version>
         <scope>system</scope>
-        <systemPath>${project.basedir}/link2telegram-1.0.jar</systemPath>
+        <systemPath>${project.basedir}/link2telegram-1.2.jar</systemPath>
       </dependency>
     ````
 * ## Gradle
   * Add the following to build.gradle
     ````
       dependencies {
-        compile files('link2telegram-1.0.jar')
+        compile files('link2telegram-1.2.jar')
       }
     ````
 * Add a reference to the project
@@ -44,7 +44,7 @@ Connect to Telegram Bot via plugin
 ## SendMessage
 Send a message using a bot
   ````java
-  Link2telegram.L2tAPI().sendFormattedMsg("<message to be sent>", ["<message type>"]);
+  Link2telegram.L2tAPI().sendMsg("<message to be sent>", ["<message type>"]);
   ````
 Currently supported message types are Status/Warn/Info, other characters will be formatted as unprefixed information
 ## GetMessage
@@ -116,12 +116,8 @@ Proxy:
 
 # Plugin function
 ServerStart/StopMessage:
-  # Whether to enable Server Start/Stop Message
+  # Whether to enable Server Start Message
   Enabled: true
-  # The message sent when the server starts
-  PluginOnEnableMsg: 'Server started'
-  # The message sent when the server shuts down
-  PluginOnDisableMsg: 'Server down'
 TPSMonitor:
   # Whether to enable TPS monitor
   Enabled: true
@@ -129,17 +125,24 @@ TPSMonitor:
   TPSCheckTimeout: 5
   # TPS max threshold
   MaxTPSThreshold: 22
-  # TPS high warning message
-  TPSTooHighInformation: 'TPS is too high, current TPS:%TPS%'
   # TPS minimum threshold
   MinTPSThreshold: 18
-  # TPS low warning message
-  TPSTooLowInformation: 'TPS is too low, current TPS:%TPS%'
 PlayerLogin:
   # Whether to enable Player login Listener
   Enabled: true
+
+# Plugin Messages
+Messages:
+  # Server starts message
+  PluginOnEnableMsg: 'Server started'
+  # Server shuts down message
+  PluginOnDisableMsg: 'Server down'
+  # TPS high warning message
+  TPSTooHighMsg: 'TPS is too high, current TPS:%TPS%'
+  # TPS low warning message
+  TPSTooLowMsg: 'TPS is too low, current TPS:%TPS%'
   # Player Login Message
-  PlayerLoginMessage: 'Player %player% login!'
+  PlayerLoginMsg: 'Player %player% login!'
 ````
 ## BotCommands
 The default built-in commands of the plugin are listed here, and these commands cannot be monitored by `OnCommandEvent`
@@ -161,4 +164,4 @@ Example: To execute the command `/say test`, send the command `/sudo say test`
 [java-telegram-bot-api](https://github.com/pengrad/java-telegram-bot-api)
 
 # License
-MIT
+Apache-2.0

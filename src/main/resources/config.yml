@@ -1,4 +1,4 @@
-#  Link2Telegram v1.1.3-pre
+#  Link2Telegram v1.2
 #  Created by Crystal-Moling
 #  GitHub page:https://github.com/Crystal-Moling/link2telegram
 
@@ -16,10 +16,6 @@ Proxy:
 ServerStart/StopMessage:
   # Whether to enable Server Start Message
   Enabled: true
-  # The message sent when the server starts
-  PluginOnEnableMsg: 'Server started'
-  # The message sent when the server shuts down
-  PluginOnDisableMsg: 'Server down'
 TPSMonitor:
   # Whether to enable TPS monitor
   Enabled: true
@@ -27,14 +23,21 @@ TPSMonitor:
   TPSCheckTimeout: 5
   # TPS max threshold
   MaxTPSThreshold: 22
-  # TPS high warning message
-  TPSTooHighInformation: 'TPS is too high, current TPS:%TPS%'
   # TPS minimum threshold
   MinTPSThreshold: 18
-  # TPS low warning message
-  TPSTooLowInformation: 'TPS is too low, current TPS:%TPS%'
 PlayerLogin:
   # Whether to enable Player login Listener
   Enabled: true
+
+# Plugin Messages
+Messages:
+  # Server starts message
+  PluginOnEnableMsg: 'Server started'
+  # Server shuts down message
+  PluginOnDisableMsg: 'Server down'
+  # TPS high warning message
+  TPSTooHighMsg: 'TPS is too high, current TPS:%TPS%'
+  # TPS low warning message
+  TPSTooLowMsg: 'TPS is too low, current TPS:%TPS%'
   # Player Login Message
-  PlayerLoginMessage: 'Player %player% login!'
+  PlayerLoginMsg: 'Player %player% login!'

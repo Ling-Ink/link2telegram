@@ -18,16 +18,16 @@
     <dependency>
       <groupId>org.crystal.link2telegram</groupId>
       <artifactId>link2telegram</artifactId>
-      <version>1.0</version>
+      <version>1.2</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/link2telegram-1.0.jar</systemPath>
+      <systemPath>${project.basedir}/link2telegram-1.2.jar</systemPath>
     </dependency>
   ```
 * ## Gradle
     * 添加以下内容到build.gradle
   ```
     dependencies {
-      compile files('link2telegram-1.0.jar')
+      compile files('link2telegram-1.2.jar')
     }
   ```
 * 为项目添加引用
@@ -44,7 +44,7 @@
 ## 发送消息
 使用机器人发送消息
   ```java
-  Link2telegram.L2tAPI().sendFormattedMsg("<待发送的消息>", ["<消息种类>"]);
+  Link2telegram.L2tAPI().sendMsg("<待发送的消息>", ["<消息种类>"]);
   ```
 目前支持的消息种类有Status/Warn/Info,输入其他字符将被格式化为无前缀信息
 ## 获取消息
@@ -100,8 +100,8 @@
 详见[Bot命令](#Bot命令)
 ## 配置
 ### 插件变量
-`%TPS%`Server TPS  
-`%player%`Logged in player
+`%TPS%`服务器TPS  
+`%player%`进入服务器的玩家名
 ### 插件配置
 ```
 # 从@BotFather处获取的BotToken
@@ -118,10 +118,6 @@ Proxy:
 ServerStart/StopMessage:
   # 是否启用服务器启动/关闭信息
   Enabled: true
-  # 服务器启动时发送的消息
-  PluginOnEnableMsg: '服务器启动'
-  # 服务器关闭时发送的消息
-  PluginOnDisableMsg: '服务器关闭'
 TPSMonitor:
   # 是否启用TPS监测
   Enabled: true
@@ -129,15 +125,22 @@ TPSMonitor:
   TPSCheckTimeout: 5
   # TPS最大阈值
   MaxTPSThreshold: 22
-  # TPS过高的警告信息
-  TPSTooHighInformation: 'TPS过高,当前TPS:%TPS%'
   # TPS最低阈值
   MinTPSThreshold: 18
-  # TPS过低的警告信息
-  TPSTooLowInformation: 'TPS过低,当前TPS:%TPS%'
 PlayerLogin:
   # 是否启用玩家登录监听器
   Enabled: true
+  
+# 消息列表
+Messages: 
+  # 服务器启动时发送的消息
+  PluginOnEnableMsg: '服务器启动'
+  # 服务器关闭时发送的消息
+  PluginOnDisableMsg: '服务器关闭'
+  # TPS过高的警告信息
+  TPSTooHighInformation: 'TPS过高,当前TPS:%TPS%'
+  # TPS过低的警告信息
+  TPSTooLowInformation: 'TPS过低,当前TPS:%TPS%'
   # 玩家登录信息
   PlayerLoginMessage: '玩家 %player% 登录!'
 ```
@@ -161,4 +164,4 @@ Disk:
 [java-telegram-bot-api](https://github.com/pengrad/java-telegram-bot-api)
 
 # License
-MIT
+Apache-2.0

@@ -32,7 +32,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
     private int GetIntConfig(String path){ return this.getConfig().getInt(path); }
     private void onEnableMsg(){
         this.getLogger().info("#     Link2telegram     #");
-        this.getLogger().info("#   Version 1.1.3-pre   #");
+        this.getLogger().info("#      Version 1.2      #");
     }
 
     private TelegramBot bot;
@@ -43,7 +43,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
         this.saveDefaultConfig();
         InitializeBotAbout();
         if(this.getConfig().getBoolean("ServerStart/StopMessage.Enabled")){
-            SendMessage(GetStringConfig("ServerStart/StopMessage.PluginOnEnableMsg"),"Status",true);
+            SendMessage(GetStringConfig(Messages.PLUGIN_ON_ENABLE),"Status",true);
         }
         getServer().getPluginManager().registerEvents(this, this);
         onEnableMsg();
@@ -51,7 +51,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
     @Override public void onDisable() {
         this.getLogger().info("Plugin Disabled!");
         if(this.getConfig().getBoolean("ServerStart/StopMessage.Enabled")){
-            SendMessage(GetStringConfig("ServerStart/StopMessage.PluginOnDisableMsg"),"Status",true);
+            SendMessage(GetStringConfig(Messages.PLUGIN_ON_DISABLE),"Status",true);
         }
     }
     @Override public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, @NotNull String[] args) {
@@ -64,6 +64,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
     }
     private void InitializeBotAbout(){
         InitializeBot();
+        ReadMsgConfig();
         ListenUpdateText();
         if(this.getConfig().getBoolean("TPSMonitor.Enabled")){ TPSListener(); }
     }
@@ -77,6 +78,13 @@ public class Link2telegram extends JavaPlugin implements Listener {
                     .build();
             bot = new TelegramBot.Builder(this.getConfig().getString("BotToken")).okHttpClient(client).build();
         } else { bot = new TelegramBot(this.getConfig().getString("BotToken")); }
+    }
+    private void ReadMsgConfig(){
+        Messages.PLUGIN_ON_ENABLE = this.getConfig().getString("Messages.PluginOnEnableMsg");
+        Messages.PLUGIN_ON_DISABLE = this.getConfig().getString("Messages.PluginOnDisableMsg");
+        Messages.TPS_TOO_HIGH = this.getConfig().getString("Messages.TPSTooHighMsg");
+        Messages.TPS_TOO_LOW = this.getConfig().getString("Messages.TPSTooLowMsg");
+        Messages.PLAYER_LOGIN = this.getConfig().getString("Messages.PlayerLoginMsg");
     }
 
     protected void SendMessage(String Msg, String MsgType, boolean FormatMsg){
@@ -121,7 +129,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
     @EventHandler private void playerLogin(PlayerLoginEvent event){
         SendMessage(
                 Formatter.PluginVariable(
-                        GetStringConfig("PlayerLogin.PlayerLoginMessage"),
+                        GetStringConfig(Messages.PLAYER_LOGIN),
                         "player",
                         event.getPlayer().getName()
                 ),
@@ -139,7 +147,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
                 if(TPS[0] > GetIntConfig("TPSMonitor.MaxTPSThreshold")){
                     SendMessage(
                             Formatter.PluginVariable(
-                                    GetStringConfig("TPSMonitor.TPSTooHighInformation"),
+                                    GetStringConfig(Messages.TPS_TOO_HIGH),
                                     "TPS",
                                     TPS[0]
                             ),
@@ -149,7 +157,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
                 } else if (TPS[0] < GetIntConfig("TPSMonitor.MinTPSThreshold")){
                     SendMessage(
                             Formatter.PluginVariable(
-                                    GetStringConfig("TPSMonitor.TPSTooLowInformation"),
+                                    GetStringConfig(Messages.TPS_TOO_LOW),
                                     "TPS",
                                     TPS[0]
                             ),
