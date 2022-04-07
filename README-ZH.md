@@ -12,11 +12,11 @@
 # 如何使用
 * 从[Release](https://github.com/Crystal-Moling/link2telegram/releases/latest)界面下载最新版本jar包
 
-* 将jar包放入 '/plugins' 目录
+* 将jar包放入 `/plugins` 目录
 
 * 如果你没有 Telegram Bot,在 [@BotFather](https://t.me/BotFather)处创建一个
 
-* 启动一次服务器或在 '/plugins/link2telegram' 目录创建 [config.yml](#插件配置) 文件
+* 启动一次服务器或在 `/plugins/link2telegram` 目录创建 [config.yml](#插件配置) 文件
 
 ### 插件配置
 ```

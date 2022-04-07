@@ -13,11 +13,11 @@ Connect to Telegram Bot via plugin
 
 * Download the latest version of the jar package from the [Release](https://github.com/Crystal-Moling/link2telegram/releases/latest) interface
 
-* Put it to '/plugins' directory 
+* Put it to `/plugins` directory 
 
 * If you already have a Telegram Bot, skip this step. If you dont, then create a Bot by [@BotFather](https://t.me/BotFather)
 
-* Run your server once or create [config.yml](#PluginConfiguration) in '/plugins/link2telegram' directory
+* Run your server once or create [config.yml](#PluginConfiguration) in `/plugins/link2telegram` directory
 
 ## PluginConfiguration
 ````
