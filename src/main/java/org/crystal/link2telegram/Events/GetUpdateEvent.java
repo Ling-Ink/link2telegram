@@ -4,6 +4,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+// Get update event, used to get received telegram message
 public class GetUpdateEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     String Message;

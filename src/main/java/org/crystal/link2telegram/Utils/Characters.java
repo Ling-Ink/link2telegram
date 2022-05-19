@@ -1,5 +1,6 @@
 package org.crystal.link2telegram.Utils;
 
+// Some used characters
 public class Characters {
     public static String STATUS_ICON = "\uD83D\uDCCA";
     public static String WARING_ICON = "⚠️";

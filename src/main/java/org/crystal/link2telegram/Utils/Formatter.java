@@ -1,6 +1,7 @@
 package org.crystal.link2telegram.Utils;
 
 public class Formatter {
+    // Format plugin variables like "&variable%"
     public static String PluginVariable(String configText, String VariableName, Object Variable){
         String[] GetText = configText.split("%");
         StringBuilder OutputString = new StringBuilder();
@@ -10,11 +11,13 @@ public class Formatter {
         }
         return OutputString.toString();
     }
+    // Format received messages whitch starts with "/" to command
     public static String[] BotCommand(int Length, String Text){
         StringBuilder Command = new StringBuilder();
         for (int i = 1; i < Length; i++) { Command.append(Text.charAt(i)); }
         return Command.toString().split(" ");
     }
+    // Format a progress bar
     public static String ProgressBar(double val, double fullVal){
         double all = fullVal / 10;
         double fullCount = Math.floor(val / all);

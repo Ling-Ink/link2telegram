@@ -10,6 +10,7 @@ public class Link2telegramAPI {
     /**
      * Send message via TelegramBot
      * @param Msg Message to be sent
+     * @param MsgType Message type to be format
      */
     public void sendMsg(String Msg){ L2t.SendMessage(Msg,null,false); }
     public void sendMsg(String Msg, String MsgType) { L2t.SendMessage(Msg,MsgType,true); }

@@ -30,14 +30,14 @@ public class Link2telegram extends JavaPlugin implements Listener {
     public static Link2telegramAPI L2tAPI(){ return L2tAPI; }
     private String GetStringConfig(String path){ return this.getConfig().getString(path); }
     private int GetIntConfig(String path){ return this.getConfig().getInt(path); }
-    private void onEnableMsg(){
+    private void onEnableMsg(){ // Startup message
         this.getLogger().info("#     Link2telegram     #");
         this.getLogger().info("#      Version 1.2      #");
     }
 
     private TelegramBot bot;
 
-    @Override public void onEnable() {
+    @Override public void onEnable() { // When plugin enabled, get and send enabled massage from config.yml
         Metrics metrics = new Metrics(this, 14304);
         L2tAPI = new Link2telegramAPI(this);
         this.saveDefaultConfig();
@@ -54,6 +54,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
             SendMessage(GetStringConfig(Messages.PLUGIN_ON_DISABLE),"Status",true);
         }
     }
+    // Listen restart command and restart plugin
     @Override public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, @NotNull String[] args) {
         if (cmd.getName().equalsIgnoreCase("l2trestart")) {
             if (!(sender instanceof Player)) { InitializeBotAbout(); }
@@ -69,7 +70,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
         if(this.getConfig().getBoolean("TPSMonitor.Enabled")){ TPSListener(); }
     }
 
-    private void InitializeBot(){
+    private void InitializeBot(){ // Set proxy and bot
         String ProxyHostname = this.getConfig().getString("Proxy.Hostname");
         int ProxyPort = this.getConfig().getInt("Proxy.Port");
         if(ProxyHostname != null){
@@ -89,17 +90,19 @@ public class Link2telegram extends JavaPlugin implements Listener {
 
     protected void SendMessage(String Msg, String MsgType, boolean FormatMsg){
         if(FormatMsg){
-            Calendar cal=Calendar.getInstance();
+            Calendar cal=Calendar.getInstance(); // Add timestamp to message
             String Message;
             String time = cal.get(Calendar.HOUR_OF_DAY) + " : " + cal.get(Calendar.MINUTE) + " : " + cal.get(Calendar.SECOND) + "\n";
-            switch (MsgType){
+            switch (MsgType){ // Add msgtype string to message
                 case "Status" -> Message = Characters.STATUS_ICON + " [Status] " + time + Msg;
                 case "Warn" -> Message = Characters.WARING_ICON + " [Warn] " + time + Msg;
                 case "Info" -> Message = Characters.INFO_ICON + " [Info] " + time + Msg;
                 default -> Message = time + Msg;
             }
+            // Sent message to telegram
             bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Message));
         } else {
+            // Directly sent message to telegram
             bot.execute(new SendMessage(this.getConfig().getString("SendMsgToChatID"), Msg));
         }
     }
@@ -108,21 +111,21 @@ public class Link2telegram extends JavaPlugin implements Listener {
             for (Update update : updates) {
                 if (update.message() != null && update.message().chat() != null) {
                     String[] GetUpdatedTextArray = update.message().text().split(" ");
-                    if(Objects.equals(GetUpdatedTextArray[0], "/status")){
+                    if(Objects.equals(GetUpdatedTextArray[0], "/status")){ // Listen built-in command "status"
                         SendMessage((String) GetSystemStatus.Get(true),"Info",true);
-                    } else if(Objects.equals(GetUpdatedTextArray[0], "/sudo")){
+                    } else if(Objects.equals(GetUpdatedTextArray[0], "/sudo")){ // Listen built-in command "sudo"
                         SendBukkitCommand.Send(update.message().text());
-                    } else if (GetUpdatedTextArray[0].startsWith("/")){
+                    } else if (GetUpdatedTextArray[0].startsWith("/")){ // Send extra commands to onCommand Event
                         OnCommandEvent OnCommandEvent = new OnCommandEvent(Formatter.BotCommand(update.message().text().length(), update.message().text()));
                         Bukkit.getScheduler().runTask(this, () -> Bukkit.getServer().getPluginManager().callEvent(OnCommandEvent));
-                    } else {
+                    } else { // Send messages to GetUpdate Event
                         GetUpdateEvent GetUpdateEvent = new GetUpdateEvent(update.message().text());
                         Bukkit.getScheduler().runTask(this, () -> Bukkit.getServer().getPluginManager().callEvent(GetUpdateEvent));
                     }
-                    this.getLogger().info(update.message().text());
+                    this.getLogger().info(update.message().text()); // Output updates message
                 }
             }
-            return UpdatesListener.CONFIRMED_UPDATES_ALL;
+            return UpdatesListener.CONFIRMED_UPDATES_ALL; // Markup telegram message to confirmed
         });
     }
 
