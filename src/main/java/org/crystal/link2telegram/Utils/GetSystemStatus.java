@@ -48,8 +48,7 @@ public class GetSystemStatus {
             spacePercent = (int) (usedSpaceG / totalSpaceG) * 100;
             DiskMessage.append("Disk:\n")
                     .append("   ").append("Root Path:").append(file.getPath()).append("\n")
-                    .append("   ").append("Used Disk:").append(usedSpaceG).append("G / ").append(totalSpaceG).append("G").append("\n")
-                    .append("   ").append(Formatter.ProgressBar(spacePercent, 100)).append(spacePercent);
+                    .append("   ").append("Used Disk:").append(usedSpaceG).append("G / ").append(totalSpaceG).append("G").append("\n");
         }
         return DiskMessage.toString();
     }

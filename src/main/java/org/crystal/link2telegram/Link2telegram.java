@@ -112,7 +112,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
                 if (update.message() != null && update.message().chat() != null) {
                     String[] GetUpdatedTextArray = update.message().text().split(" ");
                     if(Objects.equals(GetUpdatedTextArray[0], "/status")){ // Listen built-in command "status"
-                        SendMessage((String) GetSystemStatus.Get(true),"Info",true);
+                        SendMessage((String) GetSystemStatus.Get(true),"Status",true);
                     } else if(Objects.equals(GetUpdatedTextArray[0], "/sudo")){ // Listen built-in command "sudo"
                         SendBukkitCommand.Send(update.message().text());
                     } else if (GetUpdatedTextArray[0].startsWith("/")){ // Send extra commands to onCommand Event
