@@ -28,11 +28,10 @@ import java.util.Objects;
 public class Link2telegram extends JavaPlugin implements Listener {
     private static Link2telegramAPI L2tAPI;
     public static Link2telegramAPI L2tAPI(){ return L2tAPI; }
-    private String GetStringConfig(String path){ return this.getConfig().getString(path); }
     private int GetIntConfig(String path){ return this.getConfig().getInt(path); }
     private void onEnableMsg(){ // Startup message
         this.getLogger().info("#     Link2telegram     #");
-        this.getLogger().info("#      Version 1.2      #");
+        this.getLogger().info("#    Version 1.3-fix    #");
     }
 
     private TelegramBot bot;
@@ -43,7 +42,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
         this.saveDefaultConfig();
         InitializeBotAbout();
         if(this.getConfig().getBoolean("ServerStart/StopMessage.Enabled")){
-            SendMessage(GetStringConfig(Messages.PLUGIN_ON_ENABLE),"Status",true);
+            SendMessage(Messages.PLUGIN_ON_ENABLE(),"Status",true);
         }
         getServer().getPluginManager().registerEvents(this, this);
         onEnableMsg();
@@ -51,7 +50,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
     @Override public void onDisable() {
         this.getLogger().info("Plugin Disabled!");
         if(this.getConfig().getBoolean("ServerStart/StopMessage.Enabled")){
-            SendMessage(GetStringConfig(Messages.PLUGIN_ON_DISABLE),"Status",true);
+            SendMessage(Messages.PLUGIN_ON_DISABLE(),"Status",true);
         }
     }
     // Listen restart command and restart plugin
@@ -81,11 +80,11 @@ public class Link2telegram extends JavaPlugin implements Listener {
         } else { bot = new TelegramBot(this.getConfig().getString("BotToken")); }
     }
     private void ReadMsgConfig(){
-        Messages.PLUGIN_ON_ENABLE = this.getConfig().getString("Messages.PluginOnEnableMsg");
-        Messages.PLUGIN_ON_DISABLE = this.getConfig().getString("Messages.PluginOnDisableMsg");
-        Messages.TPS_TOO_HIGH = this.getConfig().getString("Messages.TPSTooHighMsg");
-        Messages.TPS_TOO_LOW = this.getConfig().getString("Messages.TPSTooLowMsg");
-        Messages.PLAYER_LOGIN = this.getConfig().getString("Messages.PlayerLoginMsg");
+        Messages.PLUGIN_ON_ENABLE(this.getConfig().getString("Messages.PluginOnEnableMsg"));
+        Messages.PLUGIN_ON_DISABLE(this.getConfig().getString("Messages.PluginOnDisableMsg"));
+        Messages.TPS_TOO_HIGH(this.getConfig().getString("Messages.TPSTooHighMsg"));
+        Messages.TPS_TOO_LOW(this.getConfig().getString("Messages.TPSTooLowMsg"));
+        Messages.PLAYER_LOGIN(this.getConfig().getString("Messages.PlayerLoginMsg"));
     }
 
     protected void SendMessage(String Msg, String MsgType, boolean FormatMsg){
@@ -132,7 +131,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
     @EventHandler private void playerLogin(PlayerLoginEvent event){
         SendMessage(
                 Formatter.PluginVariable(
-                        GetStringConfig(Messages.PLAYER_LOGIN),
+                        Messages.PLAYER_LOGIN(),
                         "player",
                         event.getPlayer().getName()
                 ),
@@ -147,26 +146,28 @@ public class Link2telegram extends JavaPlugin implements Listener {
             @Override public void run(){
                 try { TPS = GetTPS.Get(); }
                 catch (Throwable ignored) { }
-                if(TPS[0] > GetIntConfig("TPSMonitor.MaxTPSThreshold")){
-                    SendMessage(
-                            Formatter.PluginVariable(
-                                    GetStringConfig(Messages.TPS_TOO_HIGH),
-                                    "TPS",
-                                    TPS[0]
-                            ),
-                            "Warn",
-                            true
-                    );
-                } else if (TPS[0] < GetIntConfig("TPSMonitor.MinTPSThreshold")){
-                    SendMessage(
-                            Formatter.PluginVariable(
-                                    GetStringConfig(Messages.TPS_TOO_LOW),
-                                    "TPS",
-                                    TPS[0]
-                            ),
-                            "Warn",
-                            true
-                    );
+                if(TPS[0] != 0.0){
+                    if(TPS[0] > GetIntConfig("TPSMonitor.MaxTPSThreshold")){
+                        SendMessage(
+                                Formatter.PluginVariable(
+                                        Messages.TPS_TOO_HIGH(),
+                                        "TPS",
+                                        TPS[0]
+                                ),
+                                "Warn",
+                                true
+                        );
+                    } else if (TPS[0] < GetIntConfig("TPSMonitor.MinTPSThreshold")){
+                        SendMessage(
+                                Formatter.PluginVariable(
+                                        Messages.TPS_TOO_LOW(),
+                                        "TPS",
+                                        TPS[0]
+                                ),
+                                "Warn",
+                                true
+                        );
+                    }
                 }
             }
         }.runTaskTimer(this,

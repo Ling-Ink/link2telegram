@@ -24,8 +24,7 @@ public class GetSystemStatus {
         return "OS:" + OS + "\n";
     }
     private static String GetCPUUsage(){
-        double cpu = OSMXBean.getProcessCpuLoad();
-        CPULoad = (int) (cpu * 100);
+        CPULoad = (int) (OSMXBean.getProcessCpuLoad() * 100);
         return "CPU:" + Formatter.ProgressBar(CPULoad, 100) + CPULoad + "%\n";
     }
     private static String GetMemoryUsage(){
@@ -37,18 +36,29 @@ public class GetSystemStatus {
     }
     private static String GetDiskUsage(){
         StringBuilder DiskMessage = new StringBuilder();
-        int spacePercent;
         File[] roots = File.listRoots();// Get disk root list
+        File home;
         for (File file : roots) {
             long free = file.getFreeSpace();
             long total = file.getTotalSpace();
             long use = total - free;
             usedSpaceG = use / 1024 / 1024 / 1024;
             totalSpaceG = total / 1024 / 1024 / 1024;
-            spacePercent = (int) (usedSpaceG / totalSpaceG) * 100;
-            DiskMessage.append("Disk:\n")
+            DiskMessage.append("Location:\n")
                     .append("   ").append("Root Path:").append(file.getPath()).append("\n")
-                    .append("   ").append("Used Disk:").append(usedSpaceG).append("G / ").append(totalSpaceG).append("G").append("\n");
+                    .append("      ").append("Used Disk:").append(usedSpaceG).append("G / ").append(totalSpaceG).append("G").append("\n");
+        }
+        try{
+            home = new File("/home");
+            long free = home.getFreeSpace();
+            long total = home.getTotalSpace();
+            long use = total - free;
+            usedSpaceG = use / 1024 / 1024 / 1024;
+            totalSpaceG = total / 1024 / 1024 / 1024;
+            DiskMessage.append("   ").append("Root Path:").append(home.getPath()).append("\n")
+                    .append("      ").append("Used Disk:").append(usedSpaceG).append("G / ").append(totalSpaceG).append("G").append("\n");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return DiskMessage.toString();
     }
