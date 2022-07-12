@@ -75,7 +75,7 @@ Messages:
       <dependency>
         <groupId>org.crystal.link2telegram</groupId>
         <artifactId>link2telegram</artifactId>
-        <version>1.2</version>
+        <version>1.3-fix</version>
         <scope>system</scope>
         <systemPath>${project.basedir}/link2telegram-1.2.jar</systemPath>
       </dependency>
