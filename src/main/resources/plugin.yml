@@ -3,5 +3,7 @@ version: '${project.version}'
 main: org.crystal.link2telegram.Link2telegram
 api-version: 1.18
 commands:
-  l2trestart:
-    description: Restart Bot.
+  l2treload:
+    description: Reload Bot Configuration
+  l2treinit:
+    description: Reinitialize Telegram Bot

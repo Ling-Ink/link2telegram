@@ -1,4 +1,4 @@
-package org.crystal.link2telegram.Utils;
+package org.crystal.link2telegram.plugin;
 
 public class Messages {
     private static String PLUGIN_ON_ENABLE;

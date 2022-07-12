@@ -1,4 +1,4 @@
-#  Link2Telegram v1.3-fix
+#  Link2Telegram v1.3.1
 #  Created by Crystal-Moling
 #  GitHub page:https://github.com/Crystal-Moling/link2telegram
 
@@ -8,7 +8,7 @@ BotToken: '123456:qwertyuiopASDFGHJKL'
 OwnerChatId: 1234567890
 SendMsgToChatID:
   - 1234567890
-  - 0987654321
+  - 'AT:Channel-name'
 Proxy:
   #Proxy server address, if not filled, no proxy will be used
   Hostname: '127.0.0.1'
