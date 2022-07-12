@@ -1,11 +1,11 @@
 package org.crystal.link2telegram.Utils;
 
 public class Messages {
-    public static String PLUGIN_ON_ENABLE;
-    public static String PLUGIN_ON_DISABLE;
-    public static String TPS_TOO_HIGH;
-    public static String TPS_TOO_LOW;
-    public static String PLAYER_LOGIN;
+    private static String PLUGIN_ON_ENABLE;
+    private static String PLUGIN_ON_DISABLE;
+    private static String TPS_TOO_HIGH;
+    private static String TPS_TOO_LOW;
+    private static String PLAYER_LOGIN;
 
     public static void PLUGIN_ON_ENABLE(String String){ PLUGIN_ON_ENABLE = String; }
     public static String PLUGIN_ON_ENABLE(){ return PLUGIN_ON_ENABLE; }

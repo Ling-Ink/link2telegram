@@ -40,8 +40,9 @@ public class Link2telegram extends JavaPlugin implements Listener {
         Metrics metrics = new Metrics(this, 14304);
         L2tAPI = new Link2telegramAPI(this);
         this.saveDefaultConfig();
+        ReadMsgConfig();
         InitializeBotAbout();
-        if(this.getConfig().getBoolean("ServerStart/StopMessage.Enabled")){
+        if(Configuration.ENABLE_START_STOP_MSG()){
             SendMessage(Messages.PLUGIN_ON_ENABLE(),"Status",true);
         }
         getServer().getPluginManager().registerEvents(this, this);
@@ -49,7 +50,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
     }
     @Override public void onDisable() {
         this.getLogger().info("Plugin Disabled!");
-        if(this.getConfig().getBoolean("ServerStart/StopMessage.Enabled")){
+        if(Configuration.ENABLE_START_STOP_MSG()){
             SendMessage(Messages.PLUGIN_ON_DISABLE(),"Status",true);
         }
     }
@@ -64,20 +65,20 @@ public class Link2telegram extends JavaPlugin implements Listener {
     }
     private void InitializeBotAbout(){
         InitializeBot();
-        ReadMsgConfig();
         ListenUpdateText();
-        if(this.getConfig().getBoolean("TPSMonitor.Enabled")){ TPSListener(); }
+        if(Configuration.ENABLE_TPS_MONITOR()){ TPSListener(); }
     }
 
     private void InitializeBot(){ // Set proxy and bot
-        String ProxyHostname = this.getConfig().getString("Proxy.Hostname");
-        int ProxyPort = this.getConfig().getInt("Proxy.Port");
-        if(ProxyHostname != null){
+        if(Configuration.PROXY_HOSTNAME() != null){
             OkHttpClient client = new OkHttpClient.Builder()
-                    .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ProxyHostname, ProxyPort)))
+                    .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(
+                            Configuration.PROXY_HOSTNAME(),
+                            Configuration.PROXY_PORT()
+                    )))
                     .build();
-            bot = new TelegramBot.Builder(this.getConfig().getString("BotToken")).okHttpClient(client).build();
-        } else { bot = new TelegramBot(this.getConfig().getString("BotToken")); }
+            bot = new TelegramBot.Builder(Configuration.BOT_TOKEN()).okHttpClient(client).build();
+        } else { bot = new TelegramBot(Configuration.BOT_TOKEN()); }
     }
     private void ReadMsgConfig(){
         Messages.PLUGIN_ON_ENABLE(this.getConfig().getString("Messages.PluginOnEnableMsg"));
@@ -85,6 +86,16 @@ public class Link2telegram extends JavaPlugin implements Listener {
         Messages.TPS_TOO_HIGH(this.getConfig().getString("Messages.TPSTooHighMsg"));
         Messages.TPS_TOO_LOW(this.getConfig().getString("Messages.TPSTooLowMsg"));
         Messages.PLAYER_LOGIN(this.getConfig().getString("Messages.PlayerLoginMsg"));
+        Configuration.BOT_TOKEN(this.getConfig().getString("BotToken"));
+        Configuration.OWNER_CHAT_ID(this.getConfig().getString("OwnerChatId"));
+        Configuration.SEND_MSG_TO(this.getConfig().getStringList("SendMsgToChatID"));
+        Configuration.PROXY_HOSTNAME(this.getConfig().getString("Proxy.Hostname"));
+        Configuration.PROXY_PORT(this.getConfig().getInt("Proxy.Port"));
+        Configuration.ENABLE_START_STOP_MSG(this.getConfig().getBoolean("ServerStart/StopMessage.Enabled"));
+        Configuration.ENABLE_TPS_MONITOR(this.getConfig().getBoolean("TPSMonitor.Enabled"));
+        Configuration.TPS_CHECK_TIMEOUT(this.getConfig().getInt("TPSMonitor.TPSCheckTimeout"));
+        Configuration.TPS_MAX_THRESHOLD(this.getConfig().getInt("TPSMonitor.MaxTPSThreshold"));
+        Configuration.TPS_MIN_THRESHOLE(this.getConfig().getInt("TPSMonitor.MinTPSThreshold"));
     }
 
     protected void SendMessage(String Msg, String MsgType, boolean FormatMsg){
@@ -121,7 +132,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
                         GetUpdateEvent GetUpdateEvent = new GetUpdateEvent(update.message().text());
                         Bukkit.getScheduler().runTask(this, () -> Bukkit.getServer().getPluginManager().callEvent(GetUpdateEvent));
                     }
-                    this.getLogger().info(update.message().text()); // Output updates message
+                    this.getLogger().info("<GetUpdate>" + update.message().text()); // Output updates message
                 }
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL; // Markup telegram message to confirmed
@@ -147,7 +158,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
                 try { TPS = GetTPS.Get(); }
                 catch (Throwable ignored) { }
                 if(TPS[0] != 0.0){
-                    if(TPS[0] > GetIntConfig("TPSMonitor.MaxTPSThreshold")){
+                    if(TPS[0] > Configuration.TPS_MAX_THRESHOLD()){
                         SendMessage(
                                 Formatter.PluginVariable(
                                         Messages.TPS_TOO_HIGH(),
@@ -157,7 +168,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
                                 "Warn",
                                 true
                         );
-                    } else if (TPS[0] < GetIntConfig("TPSMonitor.MinTPSThreshold")){
+                    } else if (TPS[0] < Configuration.TPS_MIN_THRESHOLE()){
                         SendMessage(
                                 Formatter.PluginVariable(
                                         Messages.TPS_TOO_LOW(),
@@ -172,7 +183,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
             }
         }.runTaskTimer(this,
                 0,
-                20L * this.getConfig().getInt("TPSMonitor.TPSCheckTimeout")
+                20L * Configuration.TPS_CHECK_TIMEOUT()
         );
     }
 }

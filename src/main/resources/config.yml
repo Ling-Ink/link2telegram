@@ -5,7 +5,10 @@
 # BotToken obtained from @BotFather
 BotToken: '123456:qwertyuiopASDFGHJKL'
 # Send information to this chatId
-SendMsgToChatID: 1234567890
+OwnerChatId: 1234567890
+SendMsgToChatID:
+  - 1234567890
+  - 0987654321
 Proxy:
   #Proxy server address, if not filled, no proxy will be used
   Hostname: '127.0.0.1'
