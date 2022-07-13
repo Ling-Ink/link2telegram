@@ -1,5 +1,7 @@
 package org.crystal.link2telegram.plugin;
 
+import org.crystal.link2telegram.Link2telegram;
+
 import java.util.List;
 
 public class Configuration {
@@ -13,7 +15,7 @@ public class Configuration {
     private static int TPS_CHECK_TIMEOUT;
     private static int TPS_MAX_THRESHOLD;
     private static int TPS_MIN_THRESHOLD;
-    private static boolean ENABLE_LOGIN_MSG;
+    private static boolean ENABLE_LOGIN_LOGOUT_MSG;
 
     public static void BOT_TOKEN(String string){ BOT_TOKEN = string; }
     public static String BOT_TOKEN(){ return BOT_TOKEN; }
@@ -35,6 +37,6 @@ public class Configuration {
     public static int TPS_MAX_THRESHOLD(){ return TPS_MAX_THRESHOLD; }
     public static void TPS_MIN_THRESHOLD(int integer){ TPS_MIN_THRESHOLD = integer; }
     public static int TPS_MIN_THRESHOLD(){ return TPS_MIN_THRESHOLD; }
-    public static void ENABLE_LOGIN_MSG(boolean bool){ ENABLE_LOGIN_MSG = bool; }
-    public static boolean ENABLE_LOGIN_MSG(){ return ENABLE_LOGIN_MSG; }
+    public static void ENABLE_LOGIN_LOGOUT_MSG(boolean bool){ ENABLE_LOGIN_LOGOUT_MSG = bool; }
+    public static boolean ENABLE_LOGIN_LOGOUT_MSG(){ return ENABLE_LOGIN_LOGOUT_MSG; }
 }

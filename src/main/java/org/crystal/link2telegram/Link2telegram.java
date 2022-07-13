@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -31,6 +32,8 @@ import java.util.*;
 public class Link2telegram extends JavaPlugin implements Listener {
     private static Link2telegramAPI L2tAPI;
     public static Link2telegramAPI L2tAPI(){ return L2tAPI; }
+    private TelegramBot telegramBot;
+
     private void onEnableMsg(){ // Startup message
         String[] SyncMsgTo = Configuration.SYNC_MSG_TO().toArray(new String[0]);
         StringBuilder SyncMsgToString = new StringBuilder();
@@ -50,16 +53,20 @@ public class Link2telegram extends JavaPlugin implements Listener {
         this.getLogger().info("#     Version 1.3.1     #");
         this.getLogger().info("# Plugin owner ID: " + Configuration.OWNER_CHAT_ID());
         this.getLogger().info("# Message send to: " + SyncMsgToString);
+        this.getLogger().info("===== Configurations =====");
+        this.getLogger().info("# Proxy_Hostname: " + Configuration.PROXY_HOSTNAME());
+        this.getLogger().info("# Proxy_Port: " + Configuration.PROXY_PORT());
+        this.getLogger().info("# TPS_Check_Timeout: " + Configuration.TPS_CHECK_TIMEOUT());
+        this.getLogger().info("# TPS_Max_Threshold: " + Configuration.TPS_MAX_THRESHOLD());
+        this.getLogger().info("# TPS_Min_Threshold: " + Configuration.TPS_MIN_THRESHOLD());
     }
-
-    private TelegramBot bot;
-
     private void ReadMsgConfig(){
         Messages.PLUGIN_ON_ENABLE(this.getConfig().getString("Messages.PluginOnEnableMsg"));
         Messages.PLUGIN_ON_DISABLE(this.getConfig().getString("Messages.PluginOnDisableMsg"));
         Messages.TPS_TOO_HIGH(this.getConfig().getString("Messages.TPSTooHighMsg"));
         Messages.TPS_TOO_LOW(this.getConfig().getString("Messages.TPSTooLowMsg"));
         Messages.PLAYER_LOGIN(this.getConfig().getString("Messages.PlayerLoginMsg"));
+        Messages.PLAYER_LOGOUT(this.getConfig().getString("Messages.PlayerLogoutMsg"));
         Messages.NOT_OWNER(this.getConfig().getString("Messages.NotOwnerCommand"));
         Configuration.BOT_TOKEN(this.getConfig().getString("BotToken"));
         Configuration.OWNER_CHAT_ID(this.getConfig().getString("OwnerChatId"));
@@ -71,7 +78,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
         Configuration.TPS_CHECK_TIMEOUT(this.getConfig().getInt("TPSMonitor.TPSCheckTimeout"));
         Configuration.TPS_MAX_THRESHOLD(this.getConfig().getInt("TPSMonitor.MaxTPSThreshold"));
         Configuration.TPS_MIN_THRESHOLD(this.getConfig().getInt("TPSMonitor.MinTPSThreshold"));
-        Configuration.ENABLE_LOGIN_MSG(this.getConfig().getBoolean("PlayerLogin.Enabled"));
+        Configuration.ENABLE_LOGIN_LOGOUT_MSG(this.getConfig().getBoolean("PlayerLoginLogout.Enabled"));
 
     }
 
@@ -121,15 +128,15 @@ public class Link2telegram extends JavaPlugin implements Listener {
                             Configuration.PROXY_HOSTNAME(),
                             Configuration.PROXY_PORT())))
                     .build();
-            bot = new TelegramBot.Builder(Configuration.BOT_TOKEN()).okHttpClient(client).build();
-        } else { bot = new TelegramBot(Configuration.BOT_TOKEN()); }
+            telegramBot = new TelegramBot.Builder(Configuration.BOT_TOKEN()).okHttpClient(client).build();
+        } else { telegramBot = new TelegramBot(Configuration.BOT_TOKEN()); }
         ListenUpdateText();
         if(Configuration.ENABLE_TPS_MONITOR())
         { TPSListener(); }
     }
 
     private void ListenUpdateText(){
-        bot.setUpdatesListener(updates -> {
+        telegramBot.setUpdatesListener(updates -> {
             for (Update update : updates) {
                 if (update.message() != null && update.message().chat() != null) {
                     List<String> GetUpdatedTextArray;
@@ -147,7 +154,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
                     } else if (Objects.equals(GetUpdatedTextArray.get(0), "/sudo")){ // Listen built-in command "sudo"
                         if (ChatId.equals(Configuration.OWNER_CHAT_ID())) // If sender is server owner
                         { SendBukkitCommand(update.message().text()); } //Send command
-                        else { bot.execute(new SendMessage(update.updateId(), Messages.NOT_OWNER())); }
+                        else { telegramBot.execute(new SendMessage(update.updateId(), Messages.NOT_OWNER())); }
                     } else if (GetUpdatedTextArray.get(0).startsWith("/")){ // Send extra commands to onCommand Event
                         OnCommandEvent OnCommandEvent = new OnCommandEvent(Formatter.BotCommand(update.message().text().length(), update.message().text()));
                         Bukkit.getScheduler().runTask(this, () -> Bukkit.getServer().getPluginManager().callEvent(OnCommandEvent));
@@ -171,15 +178,13 @@ public class Link2telegram extends JavaPlugin implements Listener {
                     if(TPS[0] > Configuration.TPS_MAX_THRESHOLD()){
                         SendMessage(
                                 Configuration.OWNER_CHAT_ID(),
-                                Formatter.PluginVariable(
-                                        Messages.TPS_TOO_HIGH(), "TPS", TPS[0]
+                                Formatter.PluginVariable(Messages.TPS_TOO_HIGH(), "TPS", TPS[0]
                                 ), "Warn", true, false
                         );
                     } else if (TPS[0] < Configuration.TPS_MIN_THRESHOLD()){
                         SendMessage(
                                 Configuration.OWNER_CHAT_ID(),
-                                Formatter.PluginVariable(
-                                        Messages.TPS_TOO_LOW(), "TPS", TPS[0]
+                                Formatter.PluginVariable(Messages.TPS_TOO_LOW(), "TPS", TPS[0]
                                 ), "Warn", true, false
                         );
                     }
@@ -189,11 +194,19 @@ public class Link2telegram extends JavaPlugin implements Listener {
     }
 
     @EventHandler private void playerLogin(PlayerLoginEvent event){
-        if (Configuration.ENABLE_LOGIN_MSG()){
+        if (Configuration.ENABLE_LOGIN_LOGOUT_MSG()){
             SendMessage(
                     Configuration.OWNER_CHAT_ID(),
-                    Formatter.PluginVariable(
-                            Messages.PLAYER_LOGIN(), "player", event.getPlayer().getName()
+                    Formatter.PluginVariable(Messages.PLAYER_LOGIN(), "player", event.getPlayer().getName()
+                    ), "Info", true, false
+            );
+        }
+    }
+    @EventHandler private void playerLogout(PlayerQuitEvent event){
+        if (Configuration.ENABLE_LOGIN_LOGOUT_MSG()){
+            SendMessage(
+                    Configuration.OWNER_CHAT_ID(),
+                    Formatter.PluginVariable(Messages.PLAYER_LOGOUT(), "player", event.getPlayer().getName()
                     ), "Info", true, false
             );
         }
@@ -211,10 +224,10 @@ public class Link2telegram extends JavaPlugin implements Listener {
                 case "Info" -> Message = Characters.INFO_ICON + " [Info] " + time + Msg;
                 default -> Message = time + Msg;
             }
-            bot.execute(new SendMessage(SendTo, Message)); // Send message to Owner
+            telegramBot.execute(new SendMessage(SendTo, Message)); // Send message to Owner
             if (syncMsg) SendMsgTo(SyncMsgTo, Message); // Send message to other chats
         } else {
-            bot.execute(new SendMessage(SendTo, Msg)); // Directly send message to Owner
+            telegramBot.execute(new SendMessage(SendTo, Msg)); // Directly send message to Owner
             if (syncMsg) SendMsgTo(SyncMsgTo, Msg); // Directly send message to other chats
         }
     }
@@ -222,10 +235,10 @@ public class Link2telegram extends JavaPlugin implements Listener {
         for (String s : sendMsgTo) {
             try {
                 if (s.split(":")[0].equals("AT")) {
-                    bot.execute(new SendMessage("@" + s.split(":")[1], message));
+                    telegramBot.execute(new SendMessage("@" + s.split(":")[1], message));
                 }
             } catch (Exception e) {
-                bot.execute(new SendMessage(s, message));
+                telegramBot.execute(new SendMessage(s, message));
             }
         }
     }

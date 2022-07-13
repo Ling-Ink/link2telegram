@@ -21,10 +21,21 @@ Connect to Telegram Bot via plugin
 
 ## PluginConfiguration
 ````
+#  Link2Telegram v1.3.1
+#  Created by Crystal-Moling
+#  GitHub page:https://github.com/Crystal-Moling/link2telegram
+
 # BotToken obtained from @BotFather
 BotToken: '123456:qwertyuiopASDFGHJKL'
-# Send information to this chatId
-SendMsgToChatID: 1234567890
+# Chat ID of this server owner
+OwnerChatId: 1234567890
+# Send message to other chats,groups or channels
+# - When you need to send message to channel you should use like "@ChannelName"
+# - but the "@" couldn't write in config so use "AT:" to show that this is an "@"
+# - You needn't write owner's chat id here again
+SendMsgToChatID:
+  - 987654321
+  - 'AT:Channel-name'
 Proxy:
   #Proxy server address, if not filled, no proxy will be used
   Hostname: '127.0.0.1'
@@ -44,8 +55,8 @@ TPSMonitor:
   MaxTPSThreshold: 22
   # TPS minimum threshold
   MinTPSThreshold: 18
-PlayerLogin:
-  # Whether to enable Player login Listener
+PlayerLoginLogout:
+  # Whether to enable Player login/logout Listener
   Enabled: true
 
 # Plugin Messages
@@ -60,6 +71,11 @@ Messages:
   TPSTooLowMsg: 'TPS is too low, current TPS:%TPS%'
   # Player Login Message
   PlayerLoginMsg: 'Player %player% login!'
+  # Player Logout Message
+  PlayerLogoutMsg: 'Player %player% logout!'
+  # Not owner message
+  NotOwnerCommand: 'You do not have owner permission!'
+
 ````
 
 # Development
@@ -75,9 +91,9 @@ Messages:
       <dependency>
         <groupId>org.crystal.link2telegram</groupId>
         <artifactId>link2telegram</artifactId>
-        <version>1.3-fix</version>
+        <version>1.3.1</version>
         <scope>system</scope>
-        <systemPath>${project.basedir}/link2telegram-1.2.jar</systemPath>
+        <systemPath>${project.basedir}/link2telegram-1.3.1.jar</systemPath>
       </dependency>
     ````
 
@@ -87,7 +103,7 @@ Messages:
 
     ````
       dependencies {
-        compile files('link2telegram-1.2.jar')
+        compile files('link2telegram-1.3.1.jar')
       }
     ````
 
@@ -106,6 +122,8 @@ Messages:
 [TPS Monitoring](#TPSMonitoring)
 
 [Get Server Basic Data](#GetServerBasicData)
+
+[Get Server players list](#GetServerPlayersList)
 
 [Plugin Variable](#PluginVariable)
 
@@ -169,7 +187,7 @@ Get the command obtained by the robot (starting with "/")
 
 * Use `event.GetCommand()` to get the received command text (without "/")
 
-`/status and /sudo are built-in commands and cannot be monitored. For details, see `[BotCommands](#BotCommands)
+`/status,/sudo and /list are built-in commands and cannot be monitored. For details, see `[BotCommands](#BotCommands)
 
 Return value type: String[]
 
@@ -194,7 +212,19 @@ This method can return the current CPU and memory usage of the server
   ````
 Return value type: Object[OS Type, CPU Usage, Memory Usage, Used Disk Space, Total Disk Space]
 
-This method can also use the built-in Bot command `/status` to get the status
+This method can also use the built-in Bot command `/status` to get
+
+## GetServerPlayersList
+
+Used to get player list
+
+  ```java
+  Link2telegram.L2tAPI().getOnlinePlayers();
+  ```
+
+Return value type：String[在线玩家列表, 在线玩家人数]
+
+This method can also use the built-in Bot command `/list` to get
 
 See [BotCommands](#BotCommands)
 
@@ -210,7 +240,7 @@ The default built-in commands of the plugin are listed here, and these commands 
 
 ### /status
 
-Get the basic information of the current server and return the message format:
+Get the basic information of the current server,return the message format:
 
 ````
 ℹ️[Info] 12:34:56
@@ -226,6 +256,16 @@ Disk:
 for executing commands
 
 Example: To execute the command `/say test`, send the command `/sudo say test`
+
+### /list
+
+Used to get player list,return the message format:
+
+```
+ℹ️[Info] 12 : 34 : 56
+Online players:[1]
+Crystal_Moling
+```
 
 # dependencies
 

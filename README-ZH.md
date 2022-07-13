@@ -22,8 +22,15 @@
 ```
 # 从@BotFather处获取的BotToken
 BotToken: 123456:qwertyuiopASDFGHJKL
-# 将信息发送给该chatId
-SendMsgToChatID: 1234567890
+# 服务器拥有者的 Chat ID
+OwnerChatId: 1234567890
+# 将信息同步至其他聊天,群组或频道
+# - 当同步到频道时需要使用类似 "@频道名" 代替 Chat ID
+# - 但是yml没法使用"@"所以用"AT:"代替
+# - 服务器拥有者的信息会单独发送,不需要另外填写
+SendMsgToChatID:
+  - 987654321
+  - 'AT:Channel-name'
 Proxy: 
   #代理服务器地址,不填则不使用代理
   Hostname: 127.0.0.1
@@ -43,8 +50,8 @@ TPSMonitor:
   MaxTPSThreshold: 22
   # TPS最低阈值
   MinTPSThreshold: 18
-PlayerLogin:
-  # 是否启用玩家登录监听器
+PlayerLoginLogout:
+  # 是否启用玩家登录/登出监听器
   Enabled: true
   
 # 消息列表
@@ -58,7 +65,11 @@ Messages:
   # TPS过低的警告信息
   TPSTooLowInformation: 'TPS过低,当前TPS:%TPS%'
   # 玩家登录信息
-  PlayerLoginMessage: '玩家 %player% 登录!'
+  PlayerLoginMessage: '玩家 %player% 登入!'
+  # Player Logout Message
+  PlayerLogoutMsg: '玩家 %player% 登出!'
+  # Not owner message
+  NotOwnerCommand: '你没有权限怎么做!'
 ```
 
 # 开发
@@ -70,16 +81,16 @@ Messages:
     <dependency>
       <groupId>org.crystal.link2telegram</groupId>
       <artifactId>link2telegram</artifactId>
-      <version>1.2</version>
+      <version>1.3.1</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/link2telegram-1.2.jar</systemPath>
+      <systemPath>${project.basedir}/link2telegram-1.3.1.jar</systemPath>
     </dependency>
   ```
 * ## Gradle
     * 添加以下内容到build.gradle
   ```
     dependencies {
-      compile files('link2telegram-1.2.jar')
+      compile files('link2telegram-1.3.1.jar')
     }
   ```
 * 为项目添加引用
@@ -94,6 +105,8 @@ Messages:
 [TPS监测](#TPS监测)
 
 [获取服务器基本数据](#获取服务器基本数据)
+
+[获取服务器人数](#获取服务器人数)
 
 [插件变量](#插件变量)
 
@@ -160,7 +173,7 @@ Messages:
 
 * 使用`event.GetCommand()`获取接收到的命令文本(不带"/")
 
-`/status和/sudo为内置命令,无法被监听.详见`[Bot命令](#Bot命令)
+`/status,/sudo和/list为内置命令,无法被监听.详见`[Bot命令](#Bot命令)
 
 返回值类型：String[]
 
@@ -188,7 +201,21 @@ Messages:
 
 返回值类型：Object[系统类型, CPU占用, 内存占用, 可用磁盘空间, 总磁盘空间]
 
-该方法也可以用自带Bot命令`/status`获取状态
+该方法也可以用Bot自带命令`/status`获取状态
+
+详见[Bot命令](#Bot命令)
+
+## 获取服务器人数
+
+该方法可用返回服务器人数信息
+
+  ```java
+  Link2telegram.L2tAPI().getOnlinePlayers();
+  ```
+
+返回值类型：String[在线玩家列表, 在线玩家人数]
+
+该方法有可用用Bot自带命令`/list`获取状态
 
 详见[Bot命令](#Bot命令)
 
@@ -219,6 +246,16 @@ Disk:
 
 用于执行命令  
 示例：如要执行命令`/say test`,则发送命令`/sudo say test`
+
+### /list
+
+用于获取服务器玩家列表,返回消息格式:
+
+```
+ℹ️[信息] 12 : 34 : 56
+Online players:[1]
+Crystal_Moling
+```
 
 # 依赖
 

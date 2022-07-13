@@ -32,8 +32,8 @@ TPSMonitor:
   MaxTPSThreshold: 22
   # TPS minimum threshold
   MinTPSThreshold: 18
-PlayerLogin:
-  # Whether to enable Player login Listener
+PlayerLoginLogout:
+  # Whether to enable Player login/logout Listener
   Enabled: true
 
 # Plugin Messages
@@ -48,5 +48,7 @@ Messages:
   TPSTooLowMsg: 'TPS is too low, current TPS:%TPS%'
   # Player Login Message
   PlayerLoginMsg: 'Player %player% login!'
+  # Player Logout Message
+  PlayerLogoutMsg: 'Player %player% logout!'
   # Not owner message
   NotOwnerCommand: 'You do not have owner permission!'

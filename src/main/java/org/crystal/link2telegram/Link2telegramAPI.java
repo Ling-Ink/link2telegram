@@ -1,5 +1,6 @@
 package org.crystal.link2telegram;
 
+import org.crystal.link2telegram.Utils.GetOnlinePlayers;
 import org.crystal.link2telegram.Utils.GetSystemStatus;
 import org.crystal.link2telegram.Utils.GetTPS;
 
@@ -45,4 +46,9 @@ public class Link2telegramAPI {
      * @return Return an int[], build with {CPU usage, Memory usage}
      */
     public int[] getServerStatus(){ return (int[]) GetSystemStatus.Get(false); }
+    /**
+     * Get a list of online players
+     * @return Return a String[], build with {Player list, Player count}
+     */
+    public String[] getOnlinePlayers(){ return GetOnlinePlayers.GetList(); }
 }
