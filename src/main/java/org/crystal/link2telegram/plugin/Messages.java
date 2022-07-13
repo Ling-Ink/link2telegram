@@ -6,6 +6,7 @@ public class Messages {
     private static String TPS_TOO_HIGH;
     private static String TPS_TOO_LOW;
     private static String PLAYER_LOGIN;
+    private static String NOT_OWNER;
 
     public static void PLUGIN_ON_ENABLE(String String){ PLUGIN_ON_ENABLE = String; }
     public static String PLUGIN_ON_ENABLE(){ return PLUGIN_ON_ENABLE; }
@@ -17,4 +18,6 @@ public class Messages {
     public static String TPS_TOO_LOW(){ return TPS_TOO_LOW; }
     public static void PLAYER_LOGIN(String String){ PLAYER_LOGIN = String; }
     public static String PLAYER_LOGIN(){ return PLAYER_LOGIN; }
+    public static void NOT_OWNER(String String){ NOT_OWNER = String; }
+    public static String NOT_OWNER(){ return NOT_OWNER; }
 }

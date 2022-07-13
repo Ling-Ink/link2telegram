@@ -9,15 +9,32 @@ public class Link2telegramAPI {
 
     /**
      * Send message via TelegramBot
+     * @param SendTo Chat ID to be send
      * @param Msg Message to be sent
      */
-    public void sendMsg(String Msg){ L2t.SendMessage(Msg,null,false); }
+    public void sendMsg(String SendTo, String Msg){ L2t.SendMessage(SendTo, Msg, null,false,false); }
     /**
      * Send message via TelegramBot
+     * @param SendTo Chat ID to be send
+     * @param Msg Message to be sent
+     * @param SyncMsg Sync message to other chats
+     */
+    public void sendMsg(String SendTo, String Msg, boolean SyncMsg) { L2t.SendMessage(SendTo, Msg, null, true, SyncMsg); }
+    /**
+     * Send message via TelegramBot
+     * @param SendTo Chat ID to be send
      * @param Msg Message to be sent
      * @param MsgType Message type to be format
      */
-    public void sendMsg(String Msg, String MsgType) { L2t.SendMessage(Msg,MsgType,true); }
+    public void sendMsg(String SendTo, String Msg, String MsgType) { L2t.SendMessage(SendTo, Msg, MsgType, true, false); }
+    /**
+     * Send message via TelegramBot
+     * @param SendTo Chat ID to be send
+     * @param Msg Message to be sent
+     * @param MsgType Message type to be format
+     * @param SyncMsg Sync message to other chats
+     */
+    public void sendMsg(String SendTo, String Msg, String MsgType, boolean SyncMsg) { L2t.SendMessage(SendTo, Msg, MsgType,true, SyncMsg); }
     /**
      * Get server TPS
      * @return Server TPS

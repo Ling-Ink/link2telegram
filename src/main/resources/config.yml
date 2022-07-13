@@ -4,10 +4,14 @@
 
 # BotToken obtained from @BotFather
 BotToken: '123456:qwertyuiopASDFGHJKL'
-# Send information to this chatId
+# Chat ID of this server owner
 OwnerChatId: 1234567890
+# Send message to other chats,groups or channels
+# - When you need to send message to channel you should use like "@ChannelName"
+# - but the "@" couldn't write in config so use "AT:" to show that this is an "@"
+# - You needn't write owner's chat id here again
 SendMsgToChatID:
-  - 1234567890
+  - 987654321
   - 'AT:Channel-name'
 Proxy:
   #Proxy server address, if not filled, no proxy will be used
@@ -44,3 +48,5 @@ Messages:
   TPSTooLowMsg: 'TPS is too low, current TPS:%TPS%'
   # Player Login Message
   PlayerLoginMsg: 'Player %player% login!'
+  # Not owner message
+  NotOwnerCommand: 'You do not have owner permission!'

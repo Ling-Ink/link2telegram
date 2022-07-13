@@ -1,5 +1,7 @@
 package org.crystal.link2telegram.Utils;
 
+import org.crystal.link2telegram.plugin.Characters;
+
 public class Formatter {
     // Format plugin variables like "&variable%"
     public static String PluginVariable(String configText, String VariableName, Object Variable){

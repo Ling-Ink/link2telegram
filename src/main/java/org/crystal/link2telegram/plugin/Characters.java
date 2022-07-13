@@ -1,4 +1,4 @@
-package org.crystal.link2telegram.Utils;
+package org.crystal.link2telegram.plugin;
 
 // Some used characters
 public class Characters {
