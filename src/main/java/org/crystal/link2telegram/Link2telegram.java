@@ -30,12 +30,19 @@ public class Link2telegram extends JavaPlugin implements Listener {
     public static SendCommand SendCmd(){ return SendCmd; }
     private static Telegram Tg;
     public static Telegram Tg(){ return Tg; }
+    private static ConfigUitls ConfUtils;
+    public static ConfigUitls ConfUtils(){ return ConfUtils; }
 
     public String getStringConfig(String path){ return this.getConfig().getString(path); }
     public Boolean getBooleanConfig(String path){ return this.getConfig().getBoolean(path); }
     public Integer getIntegerConfig(String path){ return this.getConfig().getInt(path); }
     public List<String> getStringListConfig(String path){ return this.getConfig().getStringList(path); }
     public void sendLogInfo(String msg){ this.getLogger().info(msg); }
+    public void setConfig(String path, Object value){
+        this.getConfig().set(path, value);
+        this.saveConfig();
+    }
+    public void reloadConf(){ this.reloadConfig(); }
 
     public void SendConsoleCommand(String command){
         Bukkit.getScheduler().runTask(this, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),command));
@@ -70,6 +77,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
         L2tAPI = new Link2telegramAPI(this);
         ReadConf = new ReadConfig(this);
         Tg = new Telegram(this);
+        ConfUtils = new ConfigUitls(this);
         this.saveDefaultConfig();
         ReadConfig.Read();
         Telegram.Initialize();
@@ -147,8 +155,39 @@ public class Link2telegram extends JavaPlugin implements Listener {
                     SendCommand.Send(event.GetCommand()); //Send command
                 } else {
                     Telegram.SendMessage(event.GetChatId(), Messages.NOT_OWNER(),
+                            "Warn",
+                            true,
+                            false);
+                }
+                break;
+            case "config":
+                if (event.GetChatId().equals(Configuration.OWNER_CHAT_ID())) { // If sender is server owner
+                    Telegram.SendMessage(event.GetChatId(), ConfigUitls.Get(),
+                            "Info",
+                            true,
+                            false);
+                } else {
+                    Telegram.SendMessage(event.GetChatId(), Messages.NOT_OWNER(),
+                            "Warn",
+                            true,
+                            false);
+                }
+                break;
+            case "setconfig":
+                if (event.GetChatId().equals(Configuration.OWNER_CHAT_ID())) { // If sender is server owner
+                    String[] command = event.GetCommand();
+                    Telegram.SendMessage(
+                            event.GetChatId(),
+                            ConfigUitls.Set(
+                                    Integer.parseInt(command[1]),
+                                    command[2]),
                             null,
                             false,
+                            false);
+                } else {
+                    Telegram.SendMessage(event.GetChatId(), Messages.NOT_OWNER(),
+                            "Warn",
+                            true,
                             false);
                 }
                 break;

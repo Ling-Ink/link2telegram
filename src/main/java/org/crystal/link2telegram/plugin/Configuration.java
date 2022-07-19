@@ -1,9 +1,5 @@
 package org.crystal.link2telegram.plugin;
 
-import org.crystal.link2telegram.Link2telegram;
-
-import java.util.List;
-
 public class Configuration {
     private static String BOT_TOKEN;
     private static String OWNER_CHAT_ID;
