@@ -32,25 +32,30 @@ import java.util.*;
 public class Link2telegram extends JavaPlugin implements Listener {
     private static Link2telegramAPI L2tAPI;
     public static Link2telegramAPI L2tAPI(){ return L2tAPI; }
+    private static ReadConfig ReadConf;
+    public static ReadConfig ReadConf(){ return ReadConf; }
+    private static SendCommand SendCmd;
+    public static SendCommand SendCmd(){ return SendCmd; }
     private TelegramBot telegramBot;
 
+    public String getStringConfig(String path){ return this.getConfig().getString(path); }
+    public Boolean getBooleanConfig(String path){ return this.getConfig().getBoolean(path); }
+    public Integer getIntegerConfig(String path){ return this.getConfig().getInt(path); }
+    public List<String> getStringListConfig(String path){ return this.getConfig().getStringList(path); }
+
+    public void SendConsoleCommand(String command){
+        Bukkit.getScheduler().runTask(this, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),command));
+    }
+
     private void onEnableMsg(){ // Startup message
-        String[] SyncMsgTo = Configuration.SYNC_MSG_TO().toArray(new String[0]);
         StringBuilder SyncMsgToString = new StringBuilder();
-        for (String s : SyncMsgTo) {
+        for (String s : Configuration.SYNC_MSG_TO()) {
             try {
-                String[] ConfigArr = s.split(":");
-                if (ConfigArr.length == 2) {
-                    if (ConfigArr[0].equals("AT")) {
-                        SyncMsgToString.append("@").append(ConfigArr[1]).append(" ");
-                    }
-                } else if (ConfigArr.length == 1){
-                    SyncMsgToString.append(s).append(" ");
-                }
+                SyncMsgToString.append(s).append(" ");
             } catch (Exception ignored) { }
         }
         this.getLogger().info("#     Link2telegram     #");
-        this.getLogger().info("#     Version 1.3.1     #");
+        this.getLogger().info("#     Version 1.3.2     #");
         this.getLogger().info("# Plugin owner ID: " + Configuration.OWNER_CHAT_ID());
         this.getLogger().info("# Message send to: " + SyncMsgToString);
         this.getLogger().info("===== Configurations =====");
@@ -60,33 +65,14 @@ public class Link2telegram extends JavaPlugin implements Listener {
         this.getLogger().info("# TPS_Max_Threshold: " + Configuration.TPS_MAX_THRESHOLD());
         this.getLogger().info("# TPS_Min_Threshold: " + Configuration.TPS_MIN_THRESHOLD());
     }
-    private void ReadMsgConfig(){
-        Messages.PLUGIN_ON_ENABLE(this.getConfig().getString("Messages.PluginOnEnableMsg"));
-        Messages.PLUGIN_ON_DISABLE(this.getConfig().getString("Messages.PluginOnDisableMsg"));
-        Messages.TPS_TOO_HIGH(this.getConfig().getString("Messages.TPSTooHighMsg"));
-        Messages.TPS_TOO_LOW(this.getConfig().getString("Messages.TPSTooLowMsg"));
-        Messages.PLAYER_LOGIN(this.getConfig().getString("Messages.PlayerLoginMsg"));
-        Messages.PLAYER_LOGOUT(this.getConfig().getString("Messages.PlayerLogoutMsg"));
-        Messages.NOT_OWNER(this.getConfig().getString("Messages.NotOwnerCommand"));
-        Configuration.BOT_TOKEN(this.getConfig().getString("BotToken"));
-        Configuration.OWNER_CHAT_ID(this.getConfig().getString("OwnerChatId"));
-        Configuration.SYNC_MSG_TO(this.getConfig().getStringList("SendMsgToChatID"));
-        Configuration.PROXY_HOSTNAME(this.getConfig().getString("Proxy.Hostname"));
-        Configuration.PROXY_PORT(this.getConfig().getInt("Proxy.Port"));
-        Configuration.ENABLE_START_STOP_MSG(this.getConfig().getBoolean("ServerStart/StopMessage.Enabled"));
-        Configuration.ENABLE_TPS_MONITOR(this.getConfig().getBoolean("TPSMonitor.Enabled"));
-        Configuration.TPS_CHECK_TIMEOUT(this.getConfig().getInt("TPSMonitor.TPSCheckTimeout"));
-        Configuration.TPS_MAX_THRESHOLD(this.getConfig().getInt("TPSMonitor.MaxTPSThreshold"));
-        Configuration.TPS_MIN_THRESHOLD(this.getConfig().getInt("TPSMonitor.MinTPSThreshold"));
-        Configuration.ENABLE_LOGIN_LOGOUT_MSG(this.getConfig().getBoolean("PlayerLoginLogout.Enabled"));
-
-    }
 
     @Override public void onEnable() { // When plugin enabled, get and send enabled massage from config.yml
         Metrics metrics = new Metrics(this, 14304);
+        SendCmd = new SendCommand(this);
         L2tAPI = new Link2telegramAPI(this);
+        ReadConf = new ReadConfig(this);
         this.saveDefaultConfig();
-        ReadMsgConfig();
+        ReadConfig.Read();
         InitializeBot();
         if(Configuration.ENABLE_START_STOP_MSG()){
             SendMessage(Configuration.OWNER_CHAT_ID(), Messages.PLUGIN_ON_ENABLE(),"Status",true, true);
@@ -102,22 +88,18 @@ public class Link2telegram extends JavaPlugin implements Listener {
     }
     // Listen restart command and restart plugin
     @Override public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (cmd.getName().equalsIgnoreCase("l2treload")) {
-            if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player)) {
+            if (cmd.getName().equalsIgnoreCase("l2treload")) {
                 this.getLogger().info("Reload Configurations");
-                ReadMsgConfig();
+                ReadConfig.Read();
                 onEnableMsg();
-            }
-            else { sender.sendMessage("This command can only be used in console."); }
-            return true;
-        } else if (cmd.getName().equalsIgnoreCase("l2treinit")) {
-            if (!(sender instanceof Player)) {
+                return true;
+            } else if (cmd.getName().equalsIgnoreCase("l2treinit")) {
                 this.getLogger().info("Reinitialize Bot");
                 InitializeBot();
+                return true;
             }
-            else { sender.sendMessage("This command can only be used in console."); }
-            return true;
-        }
+        } else { sender.sendMessage("This command can only be used in console."); }
         return false;
     }
 
@@ -153,7 +135,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
                         SendMessage(ChatId, GetOnlinePlayers.Get(),"Status",true, false); // Send online players
                     } else if (Objects.equals(GetUpdatedTextArray.get(0), "/sudo")){ // Listen built-in command "sudo"
                         if (ChatId.equals(Configuration.OWNER_CHAT_ID())) // If sender is server owner
-                        { SendBukkitCommand(update.message().text()); } //Send command
+                        { SendCommand.Send(update.message().text()); } //Send command
                         else { telegramBot.execute(new SendMessage(update.updateId(), Messages.NOT_OWNER())); }
                     } else if (GetUpdatedTextArray.get(0).startsWith("/")){ // Send extra commands to onCommand Event
                         OnCommandEvent OnCommandEvent = new OnCommandEvent(Formatter.BotCommand(update.message().text().length(), update.message().text()));
@@ -213,7 +195,6 @@ public class Link2telegram extends JavaPlugin implements Listener {
     }
 
     protected void SendMessage(String SendTo, String Msg, String MsgType, boolean FormatMsg ,boolean syncMsg){
-        String[] SyncMsgTo = Configuration.SYNC_MSG_TO().toArray(new String[0]);
         if(FormatMsg){
             Calendar cal=Calendar.getInstance(); // Add timestamp to message
             String Message;
@@ -225,31 +206,15 @@ public class Link2telegram extends JavaPlugin implements Listener {
                 default -> Message = time + Msg;
             }
             telegramBot.execute(new SendMessage(SendTo, Message)); // Send message to Owner
-            if (syncMsg) SendMsgTo(SyncMsgTo, Message); // Send message to other chats
+            if (syncMsg) SyncMsg(Message); // Send message to other chats
         } else {
             telegramBot.execute(new SendMessage(SendTo, Msg)); // Directly send message to Owner
-            if (syncMsg) SendMsgTo(SyncMsgTo, Msg); // Directly send message to other chats
+            if (syncMsg) SyncMsg(Msg); // Directly send message to other chats
         }
     }
-    private void SendMsgTo(String[] sendMsgTo, String message) {
-        for (String s : sendMsgTo) {
-            try {
-                if (s.split(":")[0].equals("AT")) {
-                    telegramBot.execute(new SendMessage("@" + s.split(":")[1], message));
-                }
-            } catch (Exception e) {
-                telegramBot.execute(new SendMessage(s, message));
-            }
+    private void SyncMsg(String message) {
+        for (String s : Configuration.SYNC_MSG_TO()) {
+            telegramBot.execute(new SendMessage(s, message));
         }
-    }
-
-    // Used to send commands to minecraft server
-    private void SendBukkitCommand(String Command){
-        StringBuilder command = new StringBuilder();
-        for (int i = 1; i < Command.length(); i++) { command.append(Command.charAt(i)); }
-        String[] CommandArray = command.toString().split(" "); // Split String with space
-        StringBuilder OriginalCommand = new StringBuilder();
-        for (int j =1; j < CommandArray.length; j++){ OriginalCommand.append(CommandArray[j]).append(" "); }
-        Bukkit.getScheduler().runTask(this, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),OriginalCommand.toString()));
     }
 }

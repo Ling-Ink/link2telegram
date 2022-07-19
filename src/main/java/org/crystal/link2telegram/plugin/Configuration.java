@@ -7,7 +7,7 @@ import java.util.List;
 public class Configuration {
     private static String BOT_TOKEN;
     private static String OWNER_CHAT_ID;
-    private static List<String> SYNC_MSG_TO;
+    private static String[] SYNC_MSG_TO;
     private static String PROXY_HOSTNAME;
     private static int PROXY_PORT;
     private static boolean ENABLE_START_STOP_MSG;
@@ -21,8 +21,8 @@ public class Configuration {
     public static String BOT_TOKEN(){ return BOT_TOKEN; }
     public static void OWNER_CHAT_ID(String string){ OWNER_CHAT_ID = string; }
     public static String OWNER_CHAT_ID(){ return OWNER_CHAT_ID; }
-    public static void SYNC_MSG_TO(List<String> listString){ SYNC_MSG_TO = listString; }
-    public static List<String> SYNC_MSG_TO(){ return SYNC_MSG_TO; }
+    public static void SYNC_MSG_TO(String[] StringArray){ SYNC_MSG_TO = StringArray; }
+    public static String[] SYNC_MSG_TO(){ return SYNC_MSG_TO; }
     public static void PROXY_HOSTNAME(String string){ PROXY_HOSTNAME = string; }
     public static String PROXY_HOSTNAME(){ return PROXY_HOSTNAME; }
     public static void PROXY_PORT(int integer){ PROXY_PORT = integer; }
