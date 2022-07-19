@@ -3,6 +3,7 @@ package org.crystal.link2telegram;
 import org.crystal.link2telegram.Utils.GetOnlinePlayers;
 import org.crystal.link2telegram.Utils.GetSystemStatus;
 import org.crystal.link2telegram.Utils.GetTPS;
+import org.crystal.link2telegram.Utils.Telegram;
 
 public class Link2telegramAPI {
     private static Link2telegram L2t;
@@ -13,21 +14,21 @@ public class Link2telegramAPI {
      * @param SendTo Chat ID to be send
      * @param Msg Message to be sent
      */
-    public void sendMsg(String SendTo, String Msg){ L2t.SendMessage(SendTo, Msg, null,false,false); }
+    public void sendMsg(String SendTo, String Msg){ Telegram.SendMessage(SendTo, Msg, null,false,false); }
     /**
      * Send message via TelegramBot
      * @param SendTo Chat ID to be send
      * @param Msg Message to be sent
      * @param SyncMsg Sync message to other chats
      */
-    public void sendMsg(String SendTo, String Msg, boolean SyncMsg) { L2t.SendMessage(SendTo, Msg, null, true, SyncMsg); }
+    public void sendMsg(String SendTo, String Msg, boolean SyncMsg) { Telegram.SendMessage(SendTo, Msg, null, true, SyncMsg); }
     /**
      * Send message via TelegramBot
      * @param SendTo Chat ID to be send
      * @param Msg Message to be sent
      * @param MsgType Message type to be format
      */
-    public void sendMsg(String SendTo, String Msg, String MsgType) { L2t.SendMessage(SendTo, Msg, MsgType, true, false); }
+    public void sendMsg(String SendTo, String Msg, String MsgType) { Telegram.SendMessage(SendTo, Msg, MsgType, true, false); }
     /**
      * Send message via TelegramBot
      * @param SendTo Chat ID to be send
@@ -35,7 +36,7 @@ public class Link2telegramAPI {
      * @param MsgType Message type to be format
      * @param SyncMsg Sync message to other chats
      */
-    public void sendMsg(String SendTo, String Msg, String MsgType, boolean SyncMsg) { L2t.SendMessage(SendTo, Msg, MsgType,true, SyncMsg); }
+    public void sendMsg(String SendTo, String Msg, String MsgType, boolean SyncMsg) { Telegram.SendMessage(SendTo, Msg, MsgType,true, SyncMsg); }
     /**
      * Get server TPS
      * @return Server TPS

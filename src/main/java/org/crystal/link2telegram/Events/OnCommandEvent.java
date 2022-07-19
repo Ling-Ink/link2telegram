@@ -9,8 +9,10 @@ import org.jetbrains.annotations.NotNull;
 public class OnCommandEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     String[] Command;
-    public OnCommandEvent(String[] Command){ this.Command = Command; }
+    String ChatId;
+    public OnCommandEvent(String[] Command, String ChatId){ this.Command = Command; this.ChatId = ChatId; }
     public String[] GetCommand(){ return Command; }
+    public String GetChatId(){ return ChatId; }
     @NotNull
     public HandlerList getHandlers() {
         return handlers;
