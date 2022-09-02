@@ -55,7 +55,12 @@ public class Telegram {
                         GetUpdatedTextArray = Collections.singletonList(update.message().text());
                     }
                     if (GetUpdatedTextArray.get(0).startsWith("/")){ // Send extra commands to onCommand Event
-                        OnCommandEvent OnCommandEvent = new OnCommandEvent(Formatter.BotCommand(update.message().text().length(), update.message().text()), ChatId);
+                        OnCommandEvent OnCommandEvent;
+                        if (ChatId.equals(Configuration.OWNER_CHAT_ID())){
+                            OnCommandEvent = new OnCommandEvent(Formatter.BotCommand(update.message().text().length(), update.message().text()), ChatId, true);
+                        } else {
+                            OnCommandEvent = new OnCommandEvent(Formatter.BotCommand(update.message().text().length(), update.message().text()), ChatId, false);
+                        }
                         L2t.CallBukkitEvent(OnCommandEvent);
                     } else { // Send messages to GetUpdate Event
                         GetUpdateEvent GetUpdateEvent = new GetUpdateEvent(update.message().text());

@@ -30,8 +30,8 @@ public class Link2telegram extends JavaPlugin implements Listener {
     public static SendCommand SendCmd(){ return SendCmd; }
     private static Telegram Tg;
     public static Telegram Tg(){ return Tg; }
-    private static ConfigUitls ConfUtils;
-    public static ConfigUitls ConfUtils(){ return ConfUtils; }
+    private static ConfigUtils ConfUtils;
+    public static ConfigUtils ConfUtils(){ return ConfUtils; }
 
     public String getStringConfig(String path){ return this.getConfig().getString(path); }
     public Boolean getBooleanConfig(String path){ return this.getConfig().getBoolean(path); }
@@ -77,7 +77,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
         L2tAPI = new Link2telegramAPI(this);
         ReadConf = new ReadConfig(this);
         Tg = new Telegram(this);
-        ConfUtils = new ConfigUitls(this);
+        ConfUtils = new ConfigUtils(this);
         this.saveDefaultConfig();
         ReadConfig.Read();
         Telegram.Initialize();
@@ -151,7 +151,7 @@ public class Link2telegram extends JavaPlugin implements Listener {
                         false); // Send online players
                 break;
             case "sudo":
-                if (event.GetChatId().equals(Configuration.OWNER_CHAT_ID())) { // If sender is server owner
+                if (event.IsOwner()) { // If sender is server owner
                     SendCommand.Send(event.GetCommand()); //Send command
                 } else {
                     Telegram.SendMessage(event.GetChatId(), Messages.NOT_OWNER(),
@@ -161,8 +161,8 @@ public class Link2telegram extends JavaPlugin implements Listener {
                 }
                 break;
             case "config":
-                if (event.GetChatId().equals(Configuration.OWNER_CHAT_ID())) { // If sender is server owner
-                    Telegram.SendMessage(event.GetChatId(), ConfigUitls.Get(),
+                if (event.IsOwner()) { // If sender is server owner
+                    Telegram.SendMessage(event.GetChatId(), ConfigUtils.Get(),
                             "Info",
                             true,
                             false);
@@ -174,11 +174,11 @@ public class Link2telegram extends JavaPlugin implements Listener {
                 }
                 break;
             case "setconfig":
-                if (event.GetChatId().equals(Configuration.OWNER_CHAT_ID())) { // If sender is server owner
+                if (event.IsOwner()) { // If sender is server owner
                     String[] command = event.GetCommand();
                     Telegram.SendMessage(
                             event.GetChatId(),
-                            ConfigUitls.Set(
+                            ConfigUtils.Set(
                                     Integer.parseInt(command[1]),
                                     command[2]),
                             null,

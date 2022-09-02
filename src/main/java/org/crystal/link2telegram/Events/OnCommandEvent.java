@@ -9,10 +9,13 @@ import org.jetbrains.annotations.NotNull;
 public class OnCommandEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     String[] Command;
+    Boolean IsOwner;
     String ChatId;
-    public OnCommandEvent(String[] Command, String ChatId){ this.Command = Command; this.ChatId = ChatId; }
+    public OnCommandEvent(String[] Command, String ChatId, Boolean IsOwner)
+    { this.Command = Command; this.ChatId = ChatId; this.IsOwner = IsOwner; }
     public String[] GetCommand(){ return Command; }
     public String GetChatId(){ return ChatId; }
+    public Boolean IsOwner(){ return IsOwner; }
     @NotNull
     public HandlerList getHandlers() {
         return handlers;

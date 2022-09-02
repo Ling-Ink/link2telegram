@@ -3,10 +3,10 @@ package org.crystal.link2telegram.Utils;
 import org.crystal.link2telegram.Link2telegram;
 import org.crystal.link2telegram.plugin.Configuration;
 
-public class ConfigUitls {
+public class ConfigUtils {
     private static Link2telegram L2t;
-    public ConfigUitls(Link2telegram l2t){ L2t = l2t; }
-    private static String[] ConfigPathList = {
+    public ConfigUtils(Link2telegram l2t){ L2t = l2t; }
+    private static final String[] ConfigPathList = {
             "ServerStart/StopMessage.Enabled",
             "TPSMonitor.Enabled",
             "TPSMonitor.TPSCheckTimeout",
