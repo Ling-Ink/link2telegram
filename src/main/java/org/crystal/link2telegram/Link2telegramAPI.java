@@ -9,6 +9,10 @@ public class Link2telegramAPI {
     private static Link2telegram L2t;
     public Link2telegramAPI(Link2telegram l2t){ L2t = l2t; }
 
+    public final String L2T_MSGTYPE_STATUS = "Status";
+    public final String L2T_MSGTYPE_WARN = "Warn";
+    public final String L2T_MSGTYPE_INFO = "Info";
+
     /**
      * Send message via TelegramBot
      * @param SendTo Chat ID to be send
