@@ -7,6 +7,8 @@
 </p>
 
 # Introduce
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FCrystal-Moling%2Flink2telegram.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FCrystal-Moling%2Flink2telegram?ref=badge_shield)
+
 Connect to Telegram Bot via plugin
 
 # How to use
@@ -276,3 +278,6 @@ Crystal_Moling
 # License
 
 Apache-2.0
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FCrystal-Moling%2Flink2telegram.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FCrystal-Moling%2Flink2telegram?ref=badge_large)
